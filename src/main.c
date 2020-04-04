@@ -104,25 +104,35 @@ int main()
     struct sched_param param;
 
     pthread_attr_t attr1, attr2;
-    pthread_attr_init(&attr1);
-    pthread_attr_init(&attr2);
+    i = pthread_attr_init(&attr1);
+    if (i != 0)
+	    printf("ATTR1 init failed\n");
+    i = pthread_attr_init(&attr2);
+    if (i != 0)
+	    printf("ATTR2 init failed\n");
 
     cpu_set_t cpu;
     CPU_ZERO(&cpu);
     CPU_SET(1,&cpu);
+    printf("CPU is set\n");
     pthread_attr_setaffinity_np(&attr1, sizeof(cpu_set_t),&cpu);
     pthread_attr_setaffinity_np(&attr2, sizeof(cpu_set_t),&cpu);
 
-    param.sched_priority = 95;
+    int minprio = sched_get_priority_min(SCHED_FIFO);
+    int maxprio = sched_get_priority_max(SCHED_FIFO);
+
+    printf("Min prio=%d Max prio=%d\n", minprio, maxprio);
+
+    param.sched_priority = 10;
     pthread_attr_setschedpolicy(&attr1,SCHED_FIFO);
     pthread_attr_setschedparam(&attr1,&param);
     pthread_attr_setinheritsched(&attr1,PTHREAD_EXPLICIT_SCHED);
 
-    param.sched_priority = 97;
+    param.sched_priority = 15;
     pthread_attr_setschedpolicy(&attr2,SCHED_FIFO);
     pthread_attr_setschedparam(&attr2,&param);
     pthread_attr_setinheritsched(&attr2,PTHREAD_EXPLICIT_SCHED);
-
+    printf("Creating threads\n");
     pthread_create(&ppid1,&attr1,(void *)Thread1,NULL);
     pthread_create(&ppid2,&attr2,(void *)Thread2,NULL);
 
