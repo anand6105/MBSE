@@ -115,8 +115,12 @@ int main()
     CPU_ZERO(&cpu);
     CPU_SET(1,&cpu);
     printf("CPU is set\n");
-    pthread_attr_setaffinity_np(&attr1, sizeof(cpu_set_t),&cpu);
-    pthread_attr_setaffinity_np(&attr2, sizeof(cpu_set_t),&cpu);
+    i = pthread_attr_setaffinity_np(&attr1, sizeof(cpu_set_t),&cpu);
+    if (i != 0)
+        printf("ATTR2 affinity failed\n");
+    i = pthread_attr_setaffinity_np(&attr2, sizeof(cpu_set_t),&cpu);
+    if (i != 0)
+        printf("ATTR2 affinity failed\n");
 
     int minprio = sched_get_priority_min(SCHED_FIFO);
     int maxprio = sched_get_priority_max(SCHED_FIFO);
@@ -124,17 +128,29 @@ int main()
     printf("Min prio=%d Max prio=%d\n", minprio, maxprio);
 
     param.sched_priority = 10;
-    pthread_attr_setschedpolicy(&attr1,SCHED_FIFO);
-    pthread_attr_setschedparam(&attr1,&param);
-    pthread_attr_setinheritsched(&attr1,PTHREAD_EXPLICIT_SCHED);
+    i = pthread_attr_setschedpolicy(&attr1,SCHED_FIFO);
+    if (i != 0)
+        printf("ATTR1 sched policy failed\n");
+    i = pthread_attr_setschedparam(&attr1,&param);
+    if (i != 0)
+        printf("ATTR1 sched param failed\n");
+    i = pthread_attr_setinheritsched(&attr1,PTHREAD_EXPLICIT_SCHED);
+    if (i != 0)
+        printf("ATTR1 inherit sched failed\n");
 
     param.sched_priority = 15;
-    pthread_attr_setschedpolicy(&attr2,SCHED_FIFO);
-    pthread_attr_setschedparam(&attr2,&param);
-    pthread_attr_setinheritsched(&attr2,PTHREAD_EXPLICIT_SCHED);
+    i = pthread_attr_setschedpolicy(&attr2,SCHED_FIFO);
+    if (i != 0)
+        printf("ATTR2 sched policy failed\n");
+    i = pthread_attr_setschedparam(&attr2,&param);
+    if (i != 0)
+        printf("ATTR2 sched param failed\n");
+    i = pthread_attr_setinheritsched(&attr2,PTHREAD_EXPLICIT_SCHED);
+    if (i != 0)
+        printf("ATTR2 inherit sched failed\n");
     printf("Creating threads\n");
-    pthread_create(&ppid1,&attr1,(void *)Thread1,NULL);
-    pthread_create(&ppid2,&attr2,(void *)Thread2,NULL);
+    i = pthread_create(&ppid1,&attr1,(void *)Thread1,NULL);
+    i = pthread_create(&ppid2,&attr2,(void *)Thread2,NULL);
 
     pthread_join(ppid1,NULL);
     pthread_join(ppid2,NULL);
