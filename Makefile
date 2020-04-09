@@ -1,16 +1,31 @@
-PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+RMDIR   := rm -rf
+CC      := gcc
+BIN     := ./bin
+OBJ     := ./obj
+INCLUDE := ./inc
+SRC     := ./src
+SRCS    := $(wildcard $(SRC)/*.c)
+OBJS    := $(patsubst $(SRC)/%.c,$(OBJ)/%.o,$(SRCS))
+EXE     := $(BIN)/main
+CFLAGS  := -I$(INCLUDE)
+LDLIBS  := -pthread -lrt
+MKDIR   := mkdir
 
-HEADERS = -Iinc/
-CC = gcc
-OBJS = main.o
-CFLAGS += -g
-LDFLAGS += -pthread
+.PHONY: all run clean
 
-main:	$(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^
+all: $(EXE)
 
-%.o:	$(PROJECT_ROOT)src/*.c
-	$(CC) $(HEADERS) -c -Wall $(CFLAGS) -o $@ $<
+$(EXE): $(OBJS) | $(BIN)
+	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
+
+$(OBJ)/%.o: $(SRC)/%.c | $(OBJ)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BIN) $(OBJ):
+	$(MKDIR) $@
+
+run: $(EXE)
+	$<
 
 clean:
-	rm -fr main $(OBJS)
+	$(RMDIR) $(OBJ) $(BIN)
