@@ -4,159 +4,178 @@
  *   Contributors:
  *        Dortmund University of Applied Sciences and Arts - initial API and implementation
  *******************************************************************************/
-#define _GNU_SOURCE
-#include <sched.h>
-#include <stdio.h>
-#include <unistd.h>
+
 #include <stdlib.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <pthread.h>
-#include <time.h>
+#include <limits.h>
+#include <stdint.h>
+#include "mbse.h"
 
-void Thread1()
+
+typedef void *(*threadPool_t)(void *);
+
+static void *my_rt_thread(void *args);
+static void *rt_thread(void *args);
+
+static threadPool_t threadPool[MBSE_NUMBER_OF_THREADS] = {my_rt_thread, rt_thread};
+
+static void setThreadPriority(int prio, int sched)
 {
-    int j;
-    int policy;
-    int a = 0;
-    int b = 0;
-
     struct sched_param param;
-    pthread_getschedparam(pthread_self(),&policy,&param);
+    // Set realtime priority for this thread
+    param.sched_priority = prio;
+    if (sched_setscheduler(0, sched, &param) < 0)
+    {
+        perror("sched_setscheduler");
+    }
+}
 
+
+
+/* The thread to start */
+static void *rt_thread(void *args)
+{
+    uint32_t threadPolicy = 0;
+    uint32_t executionCount = 0;
     struct timespec deadline;
+    struct sched_param param;
+    uint16_t threadPriority = 0;
+    /* Re-start the timer after 10 seconds */
+    uint64_t threadDeadline = (uint64_t)(30 * MILLI_SECONDS);
+    threadPriority = sched_get_priority_max(SCHED_FIFO);
+
+    setThreadPriority(threadPriority, SCHED_FIFO);
+
+    pthread_getschedparam(pthread_self(), &threadPolicy, &param);
+
+    printf("I am a RT-thread with priority %i \n", param.sched_priority);
+
     clock_gettime(CLOCK_MONOTONIC, &(deadline));
 
     while(1)
     {
-
-    deadline.tv_nsec += 4 * 1000 * 1000;
-    if(deadline.tv_nsec >= 1000000000) {
-        deadline.tv_nsec -= 1000000000;
-        deadline.tv_sec++;
-    }
-      clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &deadline, NULL);
-      printf("Thread 1 executing\n");
-         for(j=1;j<60000;j++)
-        {
-             a += 1;
-             b += a * 2;
-             if ((j % 2000) == 0){
-                 printf("Thread 1 executing count %d\n", j);
-             }
+        uint32_t sum = 0;
+        uint32_t prod = 0;
+        /* Sleep for 5 milli second */
+        deadline.tv_nsec += 5 * MILLI_SECONDS;
+        if(deadline.tv_nsec >= threadDeadline) {
+            deadline.tv_nsec -= threadDeadline;
+            deadline.tv_sec++;
         }
-        printf("Thread 1 execution done\n");
-        a = 0;
-        b = 0;
+
+        /* Execute some instructions. Do some RT-things here */
+        for(executionCount = 0; executionCount < 10000; executionCount++)
+        {
+            // @TODO Do some random calculation. GPU calls to be made here.
+            sum += 1;
+            prod += (sum * 2);
+        }
+        /* wait 2 milliseconds before next thread cycle begins */
+        clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &deadline, NULL);
     }
 
+    return NULL;
 }
 
-void Thread2()
+
+/* The thread to start */
+static void *my_rt_thread(void *args)
 {
-    //sleep(1);
-    int j;
-    int policy;
-    int a = 0;
-    int b = 0;
-
-    struct sched_param param;
-    pthread_getschedparam(pthread_self(),&policy,&param);
-
+    uint32_t threadPolicy = 0;
+    uint32_t executionCount = 0;
     struct timespec deadline;
+    struct sched_param param;
+    uint16_t threadPriority = 0;
+    /* Re-start the timer after 10 seconds */
+    uint64_t threadDeadline = (uint64_t)(10 * MILLI_SECONDS);
+    threadPriority = sched_get_priority_max(SCHED_FIFO);
+
+    setThreadPriority(threadPriority, SCHED_FIFO);
+
+    pthread_getschedparam(pthread_self(), &threadPolicy, &param);
+
+    printf("I am a RT-thread with priority %i \n", param.sched_priority);
+
     clock_gettime(CLOCK_MONOTONIC, &(deadline));
 
     while(1)
     {
+        uint32_t sum = 0;
+        uint32_t prod = 0;
+        /* Sleep for 2 milli second */
+        deadline.tv_nsec += 2 * MILLI_SECONDS;
+        if(deadline.tv_nsec >= threadDeadline) {
+            deadline.tv_nsec -= threadDeadline;
+            deadline.tv_sec++;
+        }
 
-    deadline.tv_nsec += 2 * 1000 * 1000;
-    if(deadline.tv_nsec >= 1000000000) {
-        deadline.tv_nsec -= 1000000000;
-        deadline.tv_sec++;
+        /* Execute some instructions. Do some RT-things here */
+        for(executionCount = 0; executionCount < 20000; executionCount++)
+        {
+            // @TODO Do some random calculation. GPU calls to be made here.
+            sum += 1;
+            prod += (sum * 2);
+        }
+        /* wait 2 milliseconds before next thread cycle begins */
+        clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &deadline, NULL);
     }
 
-      clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &deadline, NULL);
-      printf("Thread 2 executing\n");
-         for(j=1;j<20000;j++)
-        {
-        a += 1;
-        b += a * 2;
-        if (j % 1000 == 0)
-        {
-            printf("Thread 2 executing count%d\n", j);
-        }
-        }
-         printf("Thread 2 execution done\n");
-    a = 0;
-    b = 0;
-    }
-
+    return NULL;
 }
 
-int main()
+static void error(int at)
 {
-    int i;
-    i = getuid();
-    if(i==0)
-        printf("The current user is root\n");
-    else
-        printf("The current user is not root\n");
+    /* Just exit on error */
+    fprintf(stderr, "Some error occured at %d", at);
+    fflush(stderr);
+    exit(1);
+}
 
-    pthread_t ppid1, ppid2;
-    struct sched_param param;
+static void startRealTimeThreads(void)
+{
+    pthread_t thread[MBSE_NUMBER_OF_THREADS];
+    pthread_attr_t attr[MBSE_NUMBER_OF_THREADS];
+    uint8_t threadIndex = 0;
 
-    pthread_attr_t attr1, attr2;
-    i = pthread_attr_init(&attr1);
-    if (i != 0)
-	    printf("ATTR1 init failed\n");
-    i = pthread_attr_init(&attr2);
-    if (i != 0)
-	    printf("ATTR2 init failed\n");
+    for(threadIndex = 0; threadIndex < MBSE_NUMBER_OF_THREADS; threadIndex++)
+    {
+        /* init to default values */
+        if (pthread_attr_init(&attr[threadIndex]))
+        {
+            error(1);
+        }
 
-    cpu_set_t cpu;
-    CPU_ZERO(&cpu);
-    CPU_SET(1,&cpu);
-    printf("CPU is set\n");
-    i = pthread_attr_setaffinity_np(&attr1, sizeof(cpu_set_t),&cpu);
-    if (i != 0)
-        printf("ATTR2 affinity failed\n");
-    i = pthread_attr_setaffinity_np(&attr2, sizeof(cpu_set_t),&cpu);
-    if (i != 0)
-        printf("ATTR2 affinity failed\n");
+        /* And finally start the actual thread */
+        if (pthread_create(&thread[threadIndex],
+                &attr[threadIndex],
+                threadPool[threadIndex], NULL))
+        {
+            error(2);
+        }
+    }
 
-    int minprio = sched_get_priority_min(SCHED_FIFO);
-    int maxprio = sched_get_priority_max(SCHED_FIFO);
 
-    printf("Min prio=%d Max prio=%d\n", minprio, maxprio);
+    for(threadIndex = 0; threadIndex < MBSE_NUMBER_OF_THREADS; threadIndex++)
+    {
+        pthread_join(thread[threadIndex], NULL);
+    }
+}
 
-    param.sched_priority = 10;
-    i = pthread_attr_setschedpolicy(&attr1,SCHED_FIFO);
-    if (i != 0)
-        printf("ATTR1 sched policy failed\n");
-    i = pthread_attr_setschedparam(&attr1,&param);
-    if (i != 0)
-        printf("ATTR1 sched param failed\n");
-    i = pthread_attr_setinheritsched(&attr1,PTHREAD_EXPLICIT_SCHED);
-    if (i != 0)
-        printf("ATTR1 inherit sched failed\n");
 
-    param.sched_priority = 15;
-    i = pthread_attr_setschedpolicy(&attr2,SCHED_FIFO);
-    if (i != 0)
-        printf("ATTR2 sched policy failed\n");
-    i = pthread_attr_setschedparam(&attr2,&param);
-    if (i != 0)
-        printf("ATTR2 sched param failed\n");
-    i = pthread_attr_setinheritsched(&attr2,PTHREAD_EXPLICIT_SCHED);
-    if (i != 0)
-        printf("ATTR2 inherit sched failed\n");
-    printf("Creating threads\n");
-    i = pthread_create(&ppid1,&attr1,(void *)Thread1,NULL);
-    i = pthread_create(&ppid2,&attr2,(void *)Thread2,NULL);
+int main(int argc, char *argv[])
+{
+    uint8_t userPrivilege;
+    userPrivilege = getuid();
+    if(userPrivilege != 0)
+    {
+        fprintf(stdout, "The current user is not root\n");
+        fflush(stdout);
+    }
 
-    pthread_join(ppid1,NULL);
-    pthread_join(ppid2,NULL);
-
-    pthread_attr_destroy(&attr1);
-    pthread_attr_destroy(&attr2);
+    startRealTimeThreads();
     return 0;
 }
 

@@ -6,7 +6,7 @@ INCLUDE := ./inc
 SRC     := ./src
 SRCS    := $(wildcard $(SRC)/*.c)
 OBJS    := $(patsubst $(SRC)/%.c,$(OBJ)/%.o,$(SRCS))
-EXE     := $(BIN)/main
+EXE     := $(BIN)/mbse
 CFLAGS  := -I$(INCLUDE)
 LDLIBS  := -pthread -lrt
 MKDIR   := mkdir
@@ -25,7 +25,7 @@ $(BIN) $(OBJ):
 	$(MKDIR) $@
 
 run: $(EXE)
-	$<
+	sudo $<
 
 clean:
 	$(RMDIR) $(OBJ) $(BIN)
