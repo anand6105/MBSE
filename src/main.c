@@ -1,3 +1,11 @@
+/*
+ * main.c
+ *
+ *  Created on: Apr 11, 2020
+ *      Author: anand
+ */
+
+
 /*******************************************************************************
  *   Copyright (c) 2019 Dortmund University of Applied Sciences and Arts and others.
  *
@@ -17,15 +25,16 @@
 
 typedef void *(*threadPool_t)(void *);
 
-static void *my_rt_thread(void *args);
-static void *rt_thread(void *args);
+static void *vDetection(void *args);
+static void *vPlanner(void *args);
 
-static threadPool_t threadPool[MBSE_NUMBER_OF_THREADS] = {my_rt_thread, rt_thread};
+static threadPool_t threadPool[MBSE_NUMBER_OF_THREADS] = {vDetection, vPlanner};
 
+/* Function to set the priority of the thread */
 static void setThreadPriority(int prio, int sched)
 {
     struct sched_param param;
-    // Set realtime priority for this thread
+    /* Set real-time priority for this thread */
     param.sched_priority = prio;
     if (sched_setscheduler(0, sched, &param) < 0)
     {
@@ -33,48 +42,50 @@ static void setThreadPriority(int prio, int sched)
     }
 }
 
+static void addDelay(uint32_t delay)
+{
+    struct timespec res;
+    res.tv_sec = delay/1000;
+    res.tv_nsec = (delay*1000000) % 1000000000;
+    clock_nanosleep(CLOCK_MONOTONIC, 0, &res, NULL);
+}
+
 
 
 /* The thread to start */
-static void *rt_thread(void *args)
+static void *vPlanner(void *args)
 {
     uint32_t threadPolicy = 0;
     uint32_t executionCount = 0;
-    struct timespec deadline;
     struct sched_param param;
     uint16_t threadPriority = 0;
-    /* Re-start the timer after 10 seconds */
-    uint64_t threadDeadline = (uint64_t)(30 * MILLI_SECONDS);
     threadPriority = sched_get_priority_max(SCHED_FIFO);
 
     setThreadPriority(threadPriority, SCHED_FIFO);
 
     pthread_getschedparam(pthread_self(), &threadPolicy, &param);
 
-    printf("I am a RT-thread with priority %i \n", param.sched_priority);
-
-    clock_gettime(CLOCK_MONOTONIC, &(deadline));
+    printf("I am %s with priority %i \n", __func__, param.sched_priority);
 
     while(1)
     {
         uint32_t sum = 0;
         uint32_t prod = 0;
-        /* Sleep for 5 milli second */
-        deadline.tv_nsec += 5 * MILLI_SECONDS;
-        if(deadline.tv_nsec >= threadDeadline) {
-            deadline.tv_nsec -= threadDeadline;
-            deadline.tv_sec++;
-        }
-
         /* Execute some instructions. Do some RT-things here */
         for(executionCount = 0; executionCount < 10000; executionCount++)
         {
             // @TODO Do some random calculation. GPU calls to be made here.
             sum += 1;
             prod += (sum * 2);
+            if (executionCount % 1000 == 0)
+            {
+                printf("%s executing loop %d\n", __func__, executionCount);
+            }
         }
-        /* wait 2 milliseconds before next thread cycle begins */
-        clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &deadline, NULL);
+        /* Call CUDA kernel */
+        addTwoVectors(__func__);
+        /* wait 100 milliseconds before next thread cycle begins */
+        addDelay(100);
     }
 
     return NULL;
@@ -82,45 +93,41 @@ static void *rt_thread(void *args)
 
 
 /* The thread to start */
-static void *my_rt_thread(void *args)
+static void *vDetection(void *args)
 {
     uint32_t threadPolicy = 0;
     uint32_t executionCount = 0;
-    struct timespec deadline;
     struct sched_param param;
     uint16_t threadPriority = 0;
-    /* Re-start the timer after 10 seconds */
-    uint64_t threadDeadline = (uint64_t)(10 * MILLI_SECONDS);
+
     threadPriority = sched_get_priority_max(SCHED_FIFO);
 
     setThreadPriority(threadPriority, SCHED_FIFO);
 
     pthread_getschedparam(pthread_self(), &threadPolicy, &param);
 
-    printf("I am a RT-thread with priority %i \n", param.sched_priority);
-
-    clock_gettime(CLOCK_MONOTONIC, &(deadline));
+    printf("I am %s with priority %i \n", __func__, param.sched_priority);
 
     while(1)
     {
         uint32_t sum = 0;
         uint32_t prod = 0;
-        /* Sleep for 2 milli second */
-        deadline.tv_nsec += 2 * MILLI_SECONDS;
-        if(deadline.tv_nsec >= threadDeadline) {
-            deadline.tv_nsec -= threadDeadline;
-            deadline.tv_sec++;
-        }
 
         /* Execute some instructions. Do some RT-things here */
-        for(executionCount = 0; executionCount < 20000; executionCount++)
+        for(executionCount = 0; executionCount < 10000; executionCount++)
         {
             // @TODO Do some random calculation. GPU calls to be made here.
             sum += 1;
             prod += (sum * 2);
+            if (executionCount % 2000 == 0)
+            {
+                printf("%s executing loop %d\n", __func__, executionCount);
+            }
         }
-        /* wait 2 milliseconds before next thread cycle begins */
-        clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &deadline, NULL);
+        /* Call CUDA kernel */
+        addTwoVectors(__func__);
+        /* wait 20 milliseconds before next thread cycle begins */
+        addDelay(20);
     }
 
     return NULL;
@@ -156,8 +163,6 @@ static void startRealTimeThreads(void)
             error(2);
         }
     }
-
-
     for(threadIndex = 0; threadIndex < MBSE_NUMBER_OF_THREADS; threadIndex++)
     {
         pthread_join(thread[threadIndex], NULL);
@@ -173,6 +178,7 @@ int main(int argc, char *argv[])
     {
         fprintf(stdout, "The current user is not root\n");
         fflush(stdout);
+        exit(1);
     }
 
     startRealTimeThreads();

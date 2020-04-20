@@ -1,7 +1,7 @@
 /*
  * mbse.h
  *
- *  Created on: Mar 24, 2020
+ *  Created on: Apr 11, 2020
  *      Author: anand
  */
 
@@ -14,5 +14,8 @@
 #define MICRO_SECONDS                1000
 #define MILLI_SECONDS                (MICRO_SECONDS * 1000)
 #define SECONDS                      (MILLI_SECONDS * 1000)
+
+
+void addTwoVectors(const char *function);
 
 #endif /* MBSE_H_ */
