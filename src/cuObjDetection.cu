@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 extern "C"{
-    #include "mbse.h"
+    #include "mbseCuda.h"
 }
 
 /**
