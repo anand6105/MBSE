@@ -1,0 +1,46 @@
+/*
+ ************************************************************************************
+ *   Copyright (c) 2020 Dortmund University of Applied Sciences and Arts and others.
+ *
+ *   Contributors:
+ *        Dortmund University of Applied Sciences and Arts -
+ *        initial API and implementation
+ ************************************************************************************
+ * utils.c
+ *
+ *  Created on: Apr 22, 2020
+ *      Author: Anand Prakash
+ */
+
+#include "mbse.h"
+
+
+/* Function to set the priority of the thread */
+void setThreadPriority(pthread_t threadId, int customPrio)
+{
+    struct sched_param param;
+
+    int threadPriority = sched_get_priority_max(SCHED_FIFO) - customPrio;
+    /* Set real-time priority for this thread */
+    param.sched_priority = threadPriority;
+    if (pthread_setschedparam(threadId, SCHED_FIFO, &param) < 0)
+    {
+        perror("sched_setscheduler");
+    }
+}
+
+void addDelay(uint32_t delay)
+{
+    struct timespec res;
+    res.tv_sec = delay/1000;
+    res.tv_nsec = (delay*1000000) % 1000000000;
+    clock_nanosleep(CLOCK_MONOTONIC, 0, &res, NULL);
+}
+
+void error(int at)
+{
+    /* Just exit on error */
+    fprintf(stderr, "Some error occured at %d", at);
+    fflush(stderr);
+    exit(1);
+}
