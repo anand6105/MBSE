@@ -13,41 +13,6 @@
 # Location of the CUDA Toolkit
 CUDA_PATH ?= /usr/local/cuda-10.0
 
-##############################
-# start deprecated interface #
-##############################
-ifeq ($(x86_64),1)
-    $(info WARNING - x86_64 variable has been deprecated)
-    $(info WARNING - please use TARGET_ARCH=x86_64 instead)
-    TARGET_ARCH ?= x86_64
-endif
-ifeq ($(ARMv7),1)
-    $(info WARNING - ARMv7 variable has been deprecated)
-    $(info WARNING - please use TARGET_ARCH=armv7l instead)
-    TARGET_ARCH ?= armv7l
-endif
-ifeq ($(aarch64),1)
-    $(info WARNING - aarch64 variable has been deprecated)
-    $(info WARNING - please use TARGET_ARCH=aarch64 instead)
-    TARGET_ARCH ?= aarch64
-endif
-ifeq ($(ppc64le),1)
-    $(info WARNING - ppc64le variable has been deprecated)
-    $(info WARNING - please use TARGET_ARCH=ppc64le instead)
-    TARGET_ARCH ?= ppc64le
-endif
-ifneq ($(GCC),)
-    $(info WARNING - GCC variable has been deprecated)
-    $(info WARNING - please use HOST_COMPILER=$(GCC) instead)
-    HOST_COMPILER ?= $(GCC)
-endif
-ifneq ($(abi),)
-    $(error ERROR - abi variable has been removed)
-endif
-############################
-# end deprecated interface #
-############################
-
 # architecture
 HOST_ARCH   := $(shell uname -m)
 TARGET_ARCH ?= $(HOST_ARCH)
@@ -78,7 +43,7 @@ endif
 # operating system
 HOST_OS   := $(shell uname -s 2>/dev/null | tr "[:upper:]" "[:lower:]")
 TARGET_OS ?= $(HOST_OS)
-ifeq (,$(filter $(TARGET_OS),linux darwin qnx android))
+ifeq (,$(filter $(TARGET_OS),linux darwin))
     $(error ERROR - unsupported value $(TARGET_OS) for TARGET_OS!)
 endif
 
@@ -91,37 +56,11 @@ else ifneq ($(TARGET_ARCH),$(HOST_ARCH))
     ifeq ($(HOST_ARCH)-$(TARGET_ARCH),x86_64-armv7l)
         ifeq ($(TARGET_OS),linux)
             HOST_COMPILER ?= arm-linux-gnueabihf-g++
-        else ifeq ($(TARGET_OS),qnx)
-            ifeq ($(QNX_HOST),)
-                $(error ERROR - QNX_HOST must be passed to the QNX host toolchain)
-            endif
-            ifeq ($(QNX_TARGET),)
-                $(error ERROR - QNX_TARGET must be passed to the QNX target toolchain)
-            endif
-            export QNX_HOST
-            export QNX_TARGET
-            HOST_COMPILER ?= $(QNX_HOST)/usr/bin/arm-unknown-nto-qnx6.6.0eabi-g++
-        else ifeq ($(TARGET_OS),android)
-            HOST_COMPILER ?= arm-linux-androideabi-g++
         endif
     else ifeq ($(TARGET_ARCH),aarch64)
         ifeq ($(TARGET_OS), linux)
             HOST_COMPILER ?= aarch64-linux-gnu-g++
-        else ifeq ($(TARGET_OS),qnx)
-            ifeq ($(QNX_HOST),)
-                $(error ERROR - QNX_HOST must be passed to the QNX host toolchain)
-            endif
-            ifeq ($(QNX_TARGET),)
-                $(error ERROR - QNX_TARGET must be passed to the QNX target toolchain)
-            endif
-            export QNX_HOST
-            export QNX_TARGET
-            HOST_COMPILER ?= $(QNX_HOST)/usr/bin/aarch64-unknown-nto-qnx7.0.0-g++
-        else ifeq ($(TARGET_OS), android)
-            HOST_COMPILER ?= aarch64-linux-android-clang++
         endif
-    else ifeq ($(TARGET_ARCH),ppc64le)
-        HOST_COMPILER ?= powerpc64le-linux-gnu-g++
     endif
 endif
 HOST_COMPILER ?= g++
@@ -174,10 +113,6 @@ ifneq ($(TARGET_ARCH),$(HOST_ARCH))
     endif
 endif
 
-ifeq ($(TARGET_OS),qnx)
-    CCFLAGS += -DWIN_INTERFACE_CUSTOM
-    LDFLAGS += -lsocket
-endif
 
 # Install directory of different arch
 CUDA_INSTALL_TARGET_DIR :=
@@ -185,16 +120,6 @@ ifeq ($(TARGET_ARCH)-$(TARGET_OS),armv7l-linux)
     CUDA_INSTALL_TARGET_DIR = targets/armv7-linux-gnueabihf/
 else ifeq ($(TARGET_ARCH)-$(TARGET_OS),aarch64-linux)
     CUDA_INSTALL_TARGET_DIR = targets/aarch64-linux/
-else ifeq ($(TARGET_ARCH)-$(TARGET_OS),armv7l-android)
-    CUDA_INSTALL_TARGET_DIR = targets/armv7-linux-androideabi/
-else ifeq ($(TARGET_ARCH)-$(TARGET_OS),aarch64-android)
-    CUDA_INSTALL_TARGET_DIR = targets/aarch64-linux-androideabi/
-else ifeq ($(TARGET_ARCH)-$(TARGET_OS),armv7l-qnx)
-    CUDA_INSTALL_TARGET_DIR = targets/ARMv7-linux-QNX/
-else ifeq ($(TARGET_ARCH)-$(TARGET_OS),aarch64-qnx)
-    CUDA_INSTALL_TARGET_DIR = targets/aarch64-qnx/
-else ifeq ($(TARGET_ARCH),ppc64le)
-    CUDA_INSTALL_TARGET_DIR = targets/ppc64le-linux/
 endif
 
 # Debug build flags
