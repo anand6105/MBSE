@@ -57,9 +57,14 @@ void *vPlanner(void *args);
  **/
 void *objDetectGetObject(void *args);
 
+/* Function to write to the Detection data buffer */
 void shmemWriteDetectionDataOutLabel(int offset, int size, void *data);
 
+/* Function to write to the Structure-From-motion and detection data buffer */
 int shmemReadSFMDetectionDataInLabel(unsigned int index);
+
+/* Function to write to SFM output data buffer. */
+void shmemWriteSFMDataOutLabel(int offset, int size, void *data);
 
 /*
  *  Structure-From-Motion is a method for estimating 3-D structures (depth) from

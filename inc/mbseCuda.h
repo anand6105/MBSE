@@ -26,8 +26,17 @@ typedef struct detectObject_t
     int imageDeviceDetection;
 } detectObject;
 
-/* Function to add two vector arrays */
+typedef struct sfmData_t
+{
+    int matrixSFMHost;
+    int imageSFMHost;
+} sfmData;
+
+/* CUDA kernel function call to detect the object */
 void cuDetectObject(const char *function, detectObject *objdetected);
+
+/* CUDA function kernel call to process the structure from motion data. */
+void cuObjDetectSFM(const char *func, sfmData *sfmInputData);
 
 void getCudaDeviceProperties(void);
 

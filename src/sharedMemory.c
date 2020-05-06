@@ -71,7 +71,7 @@ void shmemWriteDetectionDataOutLabel(int offset, int size, void *data)
 }
 
 
-void shmemWriteSFMDataOutLabel(int offset, int size, int data[])
+void shmemWriteSFMDataOutLabel(int offset, int size, void *data)
 {
     if (offset < DATA_OUT_SFM_BUFFER)
     {

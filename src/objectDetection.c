@@ -19,6 +19,8 @@
 
 static detectObject objectInfo;
 
+static sfmData sfmVal;
+
 
 static void cInGetObjectDetectedInfo()
 {
@@ -81,6 +83,21 @@ void *objDetectGetObject(void *args)
 }
 
 
+
+static void cInGetSFMInfo()
+{
+    sfmVal.matrixSFMHost  = shmemReadSFMDetectionDataInLabel(4);
+    sfmVal.imageSFMHost   = shmemReadSFMDetectionDataInLabel(5);
+}
+
+
+static void cOutSetSFMInfo()
+{
+    /* Divide the length by 4 as it is an integer pointer */
+    int dataLength = sizeof(sfmVal);
+    shmemWriteSFMDataOutLabel(0, dataLength, &sfmVal);
+}
+
 /*
  *  Structure-From-Motion is a method for estimating 3-D structures (depth) from
  *  vehicle motion and sequences of 2-D images. This task returns a matrix of points
@@ -112,9 +129,12 @@ void *objDetectStructureFromMotion(void *args)
 
     while(1)
     {
-        /* Execute some instructions. Do some RT-things here */
-        /* Call CUDA kernel */
-        //addTwoVectors(__func__);
+        /* Copy the input values from shared memory to the local memory. Analogous to the CIn operation. */
+        cInGetSFMInfo();
+        /* Call CUDA kernel. All runnables are executed in this CUDA kernel call */
+        cuObjDetectSFM(__func__, &sfmVal);
+        /* Copy the output value from local memory to shared memory. Analogous to the Cout operation.  */
+        cOutSetSFMInfo();
         fprintf(stdout,"Structure from motion task is complete. Wait for 400ms.\n ");
         /* wait 400 milliseconds before next thread cycle begins */
         addDelay(400);
