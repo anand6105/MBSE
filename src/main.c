@@ -13,12 +13,13 @@
  */
 
 #include "mbse.h"
+#include "mbseCuda.h"
 
 
 typedef void *(*threadPool_t)(void *);
 
 
-static threadPool_t threadPool[MBSE_NUMBER_OF_THREADS] = {vDetection, vSFM, vPlanner, vCanBusPolling};
+static threadPool_t threadPool[MBSE_NUMBER_OF_THREADS] = {objDetectGetObject, objDetectStructureFromMotion, vPlanner, vCanBusPolling};
 
 
 static void startRealTimeThreads(void)
@@ -50,6 +51,7 @@ static void startRealTimeThreads(void)
 }
 
 
+
 int main(int argc, char *argv[])
 {
     uint8_t userPrivilege;
@@ -60,6 +62,8 @@ int main(int argc, char *argv[])
         fflush(stdout);
         exit(1);
     }
+
+    getCudaDeviceProperties();
 
     startRealTimeThreads();
     return 0;

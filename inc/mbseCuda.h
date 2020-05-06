@@ -18,7 +18,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef struct detectObject_t
+{
+    int bboxDeviceDetection;
+    int bboxHostDetection;
+    int imageHostDetection;
+    int imageDeviceDetection;
+} detectObject;
+
 /* Function to add two vector arrays */
-void addTwoVectors(const char *function);
+void cuDetectObject(const char *function, detectObject *objdetected);
+
+void getCudaDeviceProperties(void);
 
 #endif /* MBSECUDA_H_ */

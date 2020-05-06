@@ -57,7 +57,7 @@ void *vPlanner(void *args)
             }
         }
         /* Call CUDA kernel */
-        addTwoVectors(__func__);
+        //addTwoVectors(__func__);
         /* wait 100 milliseconds before next thread cycle begins */
         addDelay(210);
     }
@@ -107,7 +107,7 @@ void *vCanBusPolling(void *args)
             }
         }
         /* Call CUDA kernel */
-        addTwoVectors(__func__);
+        //addTwoVectors(__func__);
         /* wait 20 milliseconds before next thread cycle begins */
         addDelay(90);
     }

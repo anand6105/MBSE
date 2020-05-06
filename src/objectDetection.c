@@ -16,12 +16,32 @@
 #include "mbse.h"
 #include "mbseCuda.h"
 
+
+static detectObject objectInfo;
+
+
+static void cInGetObjectDetectedInfo()
+{
+    objectInfo.bboxHostDetection    = shmemReadSFMDetectionDataInLabel(0);
+    objectInfo.imageHostDetection   = shmemReadSFMDetectionDataInLabel(1);
+    objectInfo.bboxDeviceDetection  = shmemReadSFMDetectionDataInLabel(2);
+    objectInfo.imageDeviceDetection = shmemReadSFMDetectionDataInLabel(3);
+}
+
+
+
+static void cOutSetObjectDetectedInfo()
+{
+    /* Divide the length by 4 as it is an integer pointer */
+    int dataLength = sizeof(objectInfo);
+    shmemWriteDetectionDataOutLabel(0, dataLength, &objectInfo);
+}
 /*
  *  This task is responsible of detecting and classifying the objects in the road.
  *  All the objects detected are visualized and the information produced is sent
  *  to the Planner task.
  */
-void *vDetection(void *args)
+void *objDetectGetObject(void *args)
 {
     uint32_t threadPolicy = 0;
     uint32_t executionCount = 0;
@@ -46,14 +66,16 @@ void *vDetection(void *args)
 
     while(1)
     {
-        uint32_t sum = 0;
-        uint32_t prod = 0;
-
+        /* Copy the input values from shared memory to the local memory */
+        cInGetObjectDetectedInfo();
         /* Execute some instructions. Do some RT-things here */
         /* Call CUDA kernel */
-        addTwoVectors(__func__);
+        cuDetectObject(__func__, &objectInfo);
+        /* Copy the output value from local memory to shared memory */
+        cOutSetObjectDetectedInfo();
+        fprintf(stdout, "Detection of object is complete.Wait for 300 ms.\n");
         /* wait 100 milliseconds before next thread cycle begins */
-        addDelay(100);
+        addDelay(300);
     }
 
     return NULL;
@@ -65,7 +87,7 @@ void *vDetection(void *args)
  *  vehicle motion and sequences of 2-D images. This task returns a matrix of points
  *  representing the distance with respect the objects of the image.
  **/
-void *vSFM(void *args)
+void *objDetectStructureFromMotion(void *args)
 {
     uint32_t threadPolicy = 0;
     uint32_t executionCount = 0;
@@ -95,9 +117,10 @@ void *vSFM(void *args)
 
         /* Execute some instructions. Do some RT-things here */
         /* Call CUDA kernel */
-        addTwoVectors(__func__);
+        //addTwoVectors(__func__);
+        fprintf(stdout,"Structure from motion task is complete. Wait for 400ms.\n ");
         /* wait 200 milliseconds before next thread cycle begins */
-        addDelay(200);
+        addDelay(400);
     }
 
     return NULL;

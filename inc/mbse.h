@@ -27,6 +27,7 @@
 #include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MBSE_NUMBER_OF_THREADS       4
 #define MBSE_THREAD_STACK_SIZE       (100 * 1024)      /* 100 kB is enough for now. */
@@ -54,14 +55,18 @@ void *vPlanner(void *args);
  *  All the objects detected are visualized and the information produced is sent
  *  to the Planner task.
  **/
-void *vDetection(void *args);
+void *objDetectGetObject(void *args);
+
+void shmemWriteDetectionDataOutLabel(int offset, int size, void *data);
+
+int shmemReadSFMDetectionDataInLabel(unsigned int index);
 
 /*
  *  Structure-From-Motion is a method for estimating 3-D structures (depth) from
  *  vehicle motion and sequences of 2-D images. This task returns a matrix of points
  *  representing the distance with respect the objects of the image.
  **/
-void *vSFM(void *args);
+void *objDetectStructureFromMotion(void *args);
 
 
 #endif /* MBSE_H_ */

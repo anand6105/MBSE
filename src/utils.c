@@ -29,14 +29,19 @@ void setThreadPriority(pthread_t threadId, int customPrio)
     }
 }
 
+
+/* Add delay in milliseconds */
 void addDelay(uint32_t delay)
 {
     struct timespec res;
-    res.tv_sec = delay/1000;
-    res.tv_nsec = (delay*1000000) % 1000000000;
+    /* Divide by 1000 to convert milliseconds to seconds.*/
+    res.tv_sec = (delay / 1000);
+    /* Convert milliseconds to nanoseconds*/
+    res.tv_nsec = (delay * 1000 * 1000) % (1000 * 1000 * 1000);
     clock_nanosleep(CLOCK_MONOTONIC, 0, &res, NULL);
 }
 
+/* Function to print error messages to identify error points. */
 void error(int at)
 {
     /* Just exit on error */

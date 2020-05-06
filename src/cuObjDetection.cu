@@ -1,12 +1,16 @@
 /*
- * addVectors.cu
+ ************************************************************************************
+ *   Copyright (c) 2020 Dortmund University of Applied Sciences and Arts and others.
+ *
+ *   Contributors:
+ *        Dortmund University of Applied Sciences and Arts -
+ *        initial API and implementation
+ ************************************************************************************
+ * cuObjDetection.cu
  *
  *  Created on: Apr 17, 2020
- *      Author: anand
+ *      Author: Anand Prakash
  */
-
-#include <stdio.h>
-#include <stdlib.h>
 
 extern "C"{
     #include "mbseCuda.h"
@@ -19,36 +23,133 @@ extern "C"{
  * number of elements numElements.
  */
 __global__ void
-vectorAdd(const float *A, const float *B, float *C, int numElements)
+processImage(int *hostBbox, int *devBbox, int *hostImage, int *devImage, int numElements)
 {
-    int i = blockDim.x * blockIdx.x + threadIdx.x;
+    int index = blockDim.x * blockIdx.x + threadIdx.x;
+    int sampleSize = 1024;
 
-    if (i < numElements)
+    if (index < numElements)
     {
-        C[i] = A[i] + B[i];
+        hostBbox[index] = sampleSize + 1;
+        devBbox[index] = sampleSize + 1;
+        hostImage[index] = sampleSize + 1;
+        devImage[index] = sampleSize + 1;
     }
 }
 
+
 extern "C"
-void addTwoVectors(const char *func)
+static void cudaCopyHostToDevice(int *bboxHost, int *bboxDevice, int *imageHost, int *imageDevice,
+        int *devBboxHost, int *devBboxDevice, int *devImageHost, int *devImageDevice, size_t size)
+{
+    // Error code to check return values for CUDA calls
+    cudaError_t err = cudaSuccess;
+
+    /* Copy the host input vectors to device */
+    err = cudaMemcpy(devBboxHost, bboxHost, size, cudaMemcpyHostToDevice);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy vector A from host to device (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    err = cudaMemcpy(devBboxDevice, bboxDevice, size, cudaMemcpyHostToDevice);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy vector B from host to device (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    err = cudaMemcpy(devImageHost, imageHost, size, cudaMemcpyHostToDevice);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy vector B from host to device (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    err = cudaMemcpy(devImageDevice, imageDevice, size, cudaMemcpyHostToDevice);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy vector B from host to device (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    return;
+}
+
+
+extern "C"
+static void cudaCopyDeviceToHost(int *bboxHost, int *bboxDevice, int *imageHost, int *imageDevice,
+        int *devBboxHost, int *devBboxDevice, int *devImageHost, int *devImageDevice, size_t size)
+{
+    // Error code to check return values for CUDA calls
+    cudaError_t err = cudaSuccess;
+
+    // Copy the device result vector in device memory to the host memory
+    err = cudaMemcpy(bboxHost, devBboxHost, size, cudaMemcpyDeviceToHost);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy vector C from device to host (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    // Copy the device result vector in device memory to the host memory
+    err = cudaMemcpy(bboxDevice, devBboxDevice, size, cudaMemcpyDeviceToHost);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy vector C from device to host (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    // Copy the device result vector in device memory to the host memory
+    err = cudaMemcpy(imageHost, devImageHost, size, cudaMemcpyDeviceToHost);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy vector C from device to host (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    // Copy the device result vector in device memory to the host memory
+    err = cudaMemcpy(imageDevice, devImageDevice, size, cudaMemcpyDeviceToHost);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy vector C from device to host (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    return;
+}
+
+extern "C"
+void cuDetectObject(const char *func, detectObject *objdetected)
 {
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
 
     // Print the vector length to be used, and compute its size
-    int numElements = 500000;
-    size_t size = numElements * sizeof(float);
-    //printf("[Vector addition of %d elements]\n", numElements);
+    unsigned int numElements = (512 * 1024);
+    size_t size = numElements * sizeof(int);
 
-    // Allocate the host input vector A
-    float *h_A = (float *)malloc(size);
-    // Allocate the host input vector B
-    float *h_B = (float *)malloc(size);
-    // Allocate the host output vector C
-    float *h_C = (float *)malloc(size);
+    // Allocate the host input vector bboxHost
+    int *bboxHost = (int *)malloc(size);
+    // Allocate the host input vector bboxDevice
+    int *bboxDevice = (int *)malloc(size);
+    // Allocate the host output vector imageHost
+    int *imageHost = (int *)malloc(size);
+    // Allocate the host output vector imageDevice
+    int *imageDevice = (int *)malloc(size);
 
     // Verify that allocations succeeded
-    if (h_A == NULL || h_B == NULL || h_C == NULL)
+    if (bboxHost == NULL || bboxDevice == NULL ||
+            imageHost == NULL || imageDevice == NULL)
     {
         fprintf(stderr, "Failed to allocate host vectors!\n");
         exit(EXIT_FAILURE);
@@ -57,65 +158,63 @@ void addTwoVectors(const char *func)
     // Initialize the host input vectors
     for (int i = 0; i < numElements; ++i)
     {
-        h_A[i] = rand()/(float)RAND_MAX;
-        h_B[i] = rand()/(float)RAND_MAX;
+        bboxHost[i] = objdetected->bboxHostDetection;
+        bboxDevice[i] = objdetected->bboxDeviceDetection;
+        imageHost[i] = objdetected->imageHostDetection;
+        imageDevice[i] = objdetected->imageDeviceDetection;
     }
 
-    // Allocate the device input vector A
-    float *d_A = NULL;
-    err = cudaMalloc((void **)&d_A, size);
+    // Allocate the device input vector devBboxDevice
+    int *devBboxHost = NULL;
+    err = cudaMalloc((void **)&devBboxHost, size);
 
     if (err != cudaSuccess)
     {
-        fprintf(stderr, "Failed to allocate device vector A (error code %s)!\n", cudaGetErrorString(err));
+        fprintf(stderr, "Failed to allocate device vector devBboxHost (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 
-    // Allocate the device input vector B
-    float *d_B = NULL;
-    err = cudaMalloc((void **)&d_B, size);
+    // Allocate the device input vector devBboxDevice
+    int *devBboxDevice = NULL;
+    err = cudaMalloc((void **)&devBboxDevice, size);
 
     if (err != cudaSuccess)
     {
-        fprintf(stderr, "Failed to allocate device vector B (error code %s)!\n", cudaGetErrorString(err));
+        fprintf(stderr, "Failed to allocate device vector devBboxDevice (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 
-    // Allocate the device output vector C
-    float *d_C = NULL;
-    err = cudaMalloc((void **)&d_C, size);
+    // Allocate the device output vector devImageHost
+    int *devImageHost = NULL;
+    err = cudaMalloc((void **)&devImageHost, size);
 
     if (err != cudaSuccess)
     {
-        fprintf(stderr, "Failed to allocate device vector C (error code %s)!\n", cudaGetErrorString(err));
+        fprintf(stderr, "Failed to allocate device vector devImageHost (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 
-    // Copy the host input vectors A and B in host memory to the device input vectors in
-    // device memory
-    //printf("Copy input data from the host memory to the CUDA device\n");
-    err = cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);
+
+    // Allocate the device output vector devImageDevice
+    int *devImageDevice = NULL;
+    err = cudaMalloc((void **)&devImageDevice, size);
 
     if (err != cudaSuccess)
     {
-        fprintf(stderr, "Failed to copy vector A from host to device (error code %s)!\n", cudaGetErrorString(err));
+        fprintf(stderr, "Failed to allocate device vector devImageDevice (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 
-    err = cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);
+    cudaCopyHostToDevice(bboxHost, bboxDevice, imageHost, imageDevice,
+                            devBboxHost, devBboxDevice, devImageHost, devImageDevice, size);
 
-    if (err != cudaSuccess)
-    {
-        fprintf(stderr, "Failed to copy vector B from host to device (error code %s)!\n", cudaGetErrorString(err));
-        exit(EXIT_FAILURE);
-    }
 
     // Launch the Vector Add CUDA Kernel
-    int threadsPerBlock = 128;
+    int threadsPerBlock = 256;
     int blocksPerGrid =(numElements + threadsPerBlock - 1) / threadsPerBlock;
-    printf("CUDA kernel launch with %d blocks of %d threads from parent thread %s\n"
+    fprintf(stdout,"CUDA kernel launch with %d blocks of %d threads from parent thread %s\n"
             , blocksPerGrid, threadsPerBlock, func);
-    vectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, numElements);
+    processImage<<<blocksPerGrid, threadsPerBlock>>>(devBboxHost, devBboxDevice, devImageHost, devImageDevice, numElements);
     err = cudaGetLastError();
 
     if (err != cudaSuccess)
@@ -124,31 +223,16 @@ void addTwoVectors(const char *func)
         exit(EXIT_FAILURE);
     }
 
-    // Copy the device result vector in device memory to the host result vector
-    // in host memory.
-    //printf("Copy output data from the CUDA device to the host memory\n");
-    err = cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
+    cudaCopyDeviceToHost(bboxHost, bboxDevice, imageHost, imageDevice,
+            devBboxHost, devBboxDevice, devImageHost, devImageDevice, size);
 
-    if (err != cudaSuccess)
-    {
-        fprintf(stderr, "Failed to copy vector C from device to host (error code %s)!\n", cudaGetErrorString(err));
-        exit(EXIT_FAILURE);
-    }
-
-    // Verify that the result vector is correct
-    for (int i = 0; i < numElements; ++i)
-    {
-        if (fabs(h_A[i] + h_B[i] - h_C[i]) > 1e-5)
-        {
-            fprintf(stderr, "Result verification failed at element %d!\n", i);
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    printf("Test PASSED on thread %s\n", func);
+    memcpy((int *)&objdetected->bboxDeviceDetection, (int *)&bboxDevice[0], sizeof(int));
+    memcpy((int *)&objdetected->bboxHostDetection, (int *)&bboxHost[0], sizeof(int));
+    memcpy((int *)&objdetected->imageDeviceDetection, (int *)&imageDevice[0], sizeof(int));
+    memcpy((int *)&objdetected->imageHostDetection, (int *)&imageHost[0], sizeof(int));
 
     // Free device global memory
-    err = cudaFree(d_A);
+    err = cudaFree(devBboxDevice);
 
     if (err != cudaSuccess)
     {
@@ -156,7 +240,7 @@ void addTwoVectors(const char *func)
         exit(EXIT_FAILURE);
     }
 
-    err = cudaFree(d_B);
+    err = cudaFree(devBboxHost);
 
     if (err != cudaSuccess)
     {
@@ -164,7 +248,15 @@ void addTwoVectors(const char *func)
         exit(EXIT_FAILURE);
     }
 
-    err = cudaFree(d_C);
+    err = cudaFree(devImageDevice);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to free device vector C (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    err = cudaFree(devImageHost);
 
     if (err != cudaSuccess)
     {
@@ -173,9 +265,12 @@ void addTwoVectors(const char *func)
     }
 
     // Free host memory
-    free(h_A);
-    free(h_B);
-    free(h_C);
+    free(bboxDevice);
+    free(imageDevice);
+    free(bboxHost);
+    free(imageHost);
+
+    bboxDevice = bboxHost = imageDevice = imageHost = NULL;
 
     printf("Done\n");
 }
