@@ -19,8 +19,7 @@ extern "C"{
 /**
  * CUDA Kernel Device code
  *
- * Computes the vector addition of A and B into C. The 3 vectors have the same
- * number of elements numElements.
+ * Runnable to Process the image to detect and classify the objects by creating the Boundary Box.
  */
 __global__ void
 processImage(int *hostBbox, int *devBbox, int *hostImage, int *devImage, int numElements)
@@ -37,7 +36,7 @@ processImage(int *hostBbox, int *devBbox, int *hostImage, int *devImage, int num
     }
 }
 
-
+/* Runnable Host to device call to copy input data from host memory to device memory */
 extern "C"
 static void cudaCopyHostToDevice(int *bboxHost, int *bboxDevice, int *imageHost, int *imageDevice,
         int *devBboxHost, int *devBboxDevice, int *devImageHost, int *devImageDevice, size_t size)
@@ -81,7 +80,7 @@ static void cudaCopyHostToDevice(int *bboxHost, int *bboxDevice, int *imageHost,
     return;
 }
 
-
+/* Runnable device to host call to copy output data from device memory to host memory */
 extern "C"
 static void cudaCopyDeviceToHost(int *bboxHost, int *bboxDevice, int *imageHost, int *imageDevice,
         int *devBboxHost, int *devBboxDevice, int *devImageHost, int *devImageDevice, size_t size)
@@ -128,13 +127,17 @@ static void cudaCopyDeviceToHost(int *bboxHost, int *bboxDevice, int *imageHost,
     return;
 }
 
+
+/* Function to detect the object and process the image. The output of this function is provided
+ * to the pathPlanner for further processing */
+
 extern "C"
 void cuDetectObject(const char *func, detectObject *objdetected)
 {
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
 
-    // Print the vector length to be used, and compute its size
+    // Take some random number of elements 512KB considered.
     unsigned int numElements = (512 * 1024);
     size_t size = numElements * sizeof(int);
 
@@ -205,6 +208,8 @@ void cuDetectObject(const char *func, detectObject *objdetected)
         exit(EXIT_FAILURE);
     }
 
+
+    /* Runnable Host to device call to copy input data from host memory to device memory */
     cudaCopyHostToDevice(bboxHost, bboxDevice, imageHost, imageDevice,
                             devBboxHost, devBboxDevice, devImageHost, devImageDevice, size);
 
@@ -212,8 +217,9 @@ void cuDetectObject(const char *func, detectObject *objdetected)
     // Launch the Vector Add CUDA Kernel
     int threadsPerBlock = 256;
     int blocksPerGrid =(numElements + threadsPerBlock - 1) / threadsPerBlock;
-    fprintf(stdout,"CUDA kernel launch with %d blocks of %d threads from parent thread %s\n"
-            , blocksPerGrid, threadsPerBlock, func);
+    //fprintf(stdout,"CUDA kernel launch with %d blocks of %d threads from parent thread %s\n"
+    //        , blocksPerGrid, threadsPerBlock, func);
+    /* Runnable to process the image */
     processImage<<<blocksPerGrid, threadsPerBlock>>>(devBboxHost, devBboxDevice, devImageHost, devImageDevice, numElements);
     err = cudaGetLastError();
 
@@ -223,9 +229,11 @@ void cuDetectObject(const char *func, detectObject *objdetected)
         exit(EXIT_FAILURE);
     }
 
+    /* Runnable device to host call to copy output data from device memory to host memory */
     cudaCopyDeviceToHost(bboxHost, bboxDevice, imageHost, imageDevice,
             devBboxHost, devBboxDevice, devImageHost, devImageDevice, size);
 
+    /* Copy the data to output buffer */
     memcpy((int *)&objdetected->bboxDeviceDetection, (int *)&bboxDevice[0], sizeof(int));
     memcpy((int *)&objdetected->bboxHostDetection, (int *)&bboxHost[0], sizeof(int));
     memcpy((int *)&objdetected->imageDeviceDetection, (int *)&imageDevice[0], sizeof(int));
@@ -272,6 +280,6 @@ void cuDetectObject(const char *func, detectObject *objdetected)
 
     bboxDevice = bboxHost = imageDevice = imageHost = NULL;
 
-    printf("Done\n");
+    printf("Detection task is complete.\n");
 }
 

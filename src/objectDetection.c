@@ -29,7 +29,6 @@ static void cInGetObjectDetectedInfo()
 }
 
 
-
 static void cOutSetObjectDetectedInfo()
 {
     /* Divide the length by 4 as it is an integer pointer */
@@ -49,6 +48,7 @@ void *objDetectGetObject(void *args)
     uint16_t threadPriority = 0;
     cpu_set_t mask;
     CPU_ZERO(&mask);
+    /* Assign the task to core 0 */
     CPU_SET(0, &mask);
 
     pthread_t threadId = pthread_self();
@@ -66,15 +66,14 @@ void *objDetectGetObject(void *args)
 
     while(1)
     {
-        /* Copy the input values from shared memory to the local memory */
+        /* Copy the input values from shared memory to the local memory. Analogous to the CIn operation. */
         cInGetObjectDetectedInfo();
-        /* Execute some instructions. Do some RT-things here */
-        /* Call CUDA kernel */
+        /* Call CUDA kernel. All runnables are executed in this CUDA kernel call */
         cuDetectObject(__func__, &objectInfo);
-        /* Copy the output value from local memory to shared memory */
+        /* Copy the output value from local memory to shared memory. Analogous to the Cout operation.  */
         cOutSetObjectDetectedInfo();
         fprintf(stdout, "Detection of object is complete.Wait for 300 ms.\n");
-        /* wait 100 milliseconds before next thread cycle begins */
+        /* wait 300 milliseconds before next thread cycle begins */
         addDelay(300);
     }
 
@@ -95,6 +94,7 @@ void *objDetectStructureFromMotion(void *args)
     uint16_t threadPriority = 0;
     cpu_set_t mask;
     CPU_ZERO(&mask);
+    /* Assign the task to core 0 */
     CPU_SET(0, &mask);
 
     pthread_t threadId = pthread_self();
@@ -112,14 +112,11 @@ void *objDetectStructureFromMotion(void *args)
 
     while(1)
     {
-        uint32_t sum = 0;
-        uint32_t prod = 0;
-
         /* Execute some instructions. Do some RT-things here */
         /* Call CUDA kernel */
         //addTwoVectors(__func__);
         fprintf(stdout,"Structure from motion task is complete. Wait for 400ms.\n ");
-        /* wait 200 milliseconds before next thread cycle begins */
+        /* wait 400 milliseconds before next thread cycle begins */
         addDelay(400);
     }
 
