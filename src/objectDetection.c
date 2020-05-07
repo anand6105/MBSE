@@ -60,14 +60,16 @@ void *objDetectGetObject(void *args)
         exit(3);
     }
 
-    setThreadPriority(threadId, 0);
+    utilSetThreadPriority(threadId, 5);
 
     pthread_getschedparam(threadId, &threadPolicy, &param);
 
     printf("I am %s with priority %i on CPU %d\n", __func__, param.sched_priority, sched_getcpu());
 
+    utilInitializeTimer(DETECTION_TIMER);
     while(1)
     {
+        fprintf(stdout, "Start Detection task\n");
         /* Copy the input values from shared memory to the local memory. Analogous to the CIn operation. */
         cInGetObjectDetectedInfo();
         /* Call CUDA kernel. All runnables are executed in this CUDA kernel call */
@@ -76,7 +78,7 @@ void *objDetectGetObject(void *args)
         cOutSetObjectDetectedInfo();
         fprintf(stdout, "Detection of object is complete.Wait for 300 ms.\n");
         /* wait 300 milliseconds before next thread cycle begins */
-        addDelay(300);
+        utilAddDelay(300, DETECTION_TIMER);
     }
 
     return NULL;
@@ -121,23 +123,25 @@ void *objDetectStructureFromMotion(void *args)
         exit(3);
     }
 
-    setThreadPriority(threadId, 5);
+    utilSetThreadPriority(threadId, 0);
 
     pthread_getschedparam(threadId, &threadPolicy, &param);
 
     printf("I am %s with priority %i on CPU %d\n", __func__, param.sched_priority, sched_getcpu());
 
+    utilInitializeTimer(SFM_TIMER);
     while(1)
     {
+        fprintf(stdout, "Start SFM task\n");
         /* Copy the input values from shared memory to the local memory. Analogous to the CIn operation. */
         cInGetSFMInfo();
         /* Call CUDA kernel. All runnables are executed in this CUDA kernel call */
         cuObjDetectSFM(__func__, &sfmVal);
         /* Copy the output value from local memory to shared memory. Analogous to the Cout operation.  */
         cOutSetSFMInfo();
-        fprintf(stdout,"Structure from motion task is complete. Wait for 400ms.\n ");
-        /* wait 400 milliseconds before next thread cycle begins */
-        addDelay(400);
+        fprintf(stdout,"Structure from motion task is complete. Wait for 200ms.\n ");
+        /* wait 200 milliseconds before next thread cycle begins */
+        utilAddDelay(200, SFM_TIMER);
     }
 
     return NULL;

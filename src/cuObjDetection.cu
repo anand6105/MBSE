@@ -284,8 +284,6 @@ void cuDetectObject(const char *func, detectObject *objdetected)
     free(imageHost);
 
     bboxDevice = bboxHost = imageDevice = imageHost = NULL;
-
-    printf("Detection task is complete.\n");
 }
 
 
@@ -324,7 +322,7 @@ void cuObjDetectSFM(const char *func, sfmData *sfmInput)
     pi *= step;
 
     // Print results
-    printf("PI = %f\n",pi);
+    //printf("PI = %f\n",pi);
 
     // Cleanup
     free(sumHost);

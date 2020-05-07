@@ -36,14 +36,26 @@
 #define MILLI_SECONDS                (MICRO_SECONDS * 1000)
 #define SECONDS                      (MILLI_SECONDS * 1000)
 
+
+typedef enum timerTask_t
+{
+    DETECTION_TIMER = 0,
+    SFM_TIMER,
+    PLANNER_TIMER,
+    CAN_BUS_POLLING_TIMER
+}timerTask;
+
 /* Function to print error messages */
 void error(int at);
 
+/* Function to initialize the timer value */
+void utilInitializeTimer(timerTask timer);
+
 /* Function to add delay */
-void addDelay(uint32_t delay);
+void utilAddDelay(uint32_t ms, timerTask timer);
 
 /* Function to set the priority of the thread */
-void setThreadPriority(pthread_t threadId, int prio);
+void utilSetThreadPriority(pthread_t threadId, int prio);
 
 
 void *vCanBusPolling(void *args);

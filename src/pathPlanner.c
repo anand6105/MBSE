@@ -35,12 +35,13 @@ void *vPlanner(void *args)
         exit(2);
     }
 
-    setThreadPriority(threadId, 5);
+    utilSetThreadPriority(threadId, 5);
 
     pthread_getschedparam(threadId, &threadPolicy, &param);
 
     printf("I am %s with priority %i on CPU %d\n", __func__, param.sched_priority, sched_getcpu());
 
+    utilInitializeTimer(PLANNER_TIMER);
     while(1)
     {
         uint32_t sum = 0;
@@ -58,8 +59,9 @@ void *vPlanner(void *args)
         }
         /* Call CUDA kernel */
         //addTwoVectors(__func__);
-        /* wait 100 milliseconds before next thread cycle begins */
-        addDelay(210);
+        fprintf(stdout, "Planner task complete. Wait for 600 ms\n");
+        /* wait 600 milliseconds before next thread cycle begins */
+        utilAddDelay(600, PLANNER_TIMER);
     }
 
     return NULL;
@@ -84,12 +86,13 @@ void *vCanBusPolling(void *args)
         exit(3);
     }
 
-    setThreadPriority(threadId, 0);
+    utilSetThreadPriority(threadId, 0);
 
     pthread_getschedparam(threadId, &threadPolicy, &param);
 
     printf("I am %s with priority %i on CPU %d\n", __func__, param.sched_priority, sched_getcpu());
 
+    utilInitializeTimer(CAN_BUS_POLLING_TIMER);
     while(1)
     {
         uint32_t sum = 0;
@@ -108,8 +111,9 @@ void *vCanBusPolling(void *args)
         }
         /* Call CUDA kernel */
         //addTwoVectors(__func__);
-        /* wait 20 milliseconds before next thread cycle begins */
-        addDelay(90);
+        fprintf(stdout, "Can Bus polling complete. Wait for 300 ms\n");
+        /* wait 300 milliseconds before next thread cycle begins */
+        utilAddDelay(300, CAN_BUS_POLLING_TIMER);
     }
 
     return NULL;

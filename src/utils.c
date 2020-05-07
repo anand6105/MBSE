@@ -14,9 +14,11 @@
 
 #include "mbse.h"
 
+static struct timespec ts[MBSE_NUMBER_OF_THREADS];
+
 
 /* Function to set the priority of the thread */
-void setThreadPriority(pthread_t threadId, int customPrio)
+void utilSetThreadPriority(pthread_t threadId, int customPrio)
 {
     struct sched_param param;
 
@@ -30,15 +32,24 @@ void setThreadPriority(pthread_t threadId, int customPrio)
 }
 
 
-/* Add delay in milliseconds */
-void addDelay(uint32_t delay)
+
+void utilInitializeTimer(timerTask timer)
 {
-    struct timespec res;
+    clock_getres(CLOCK_MONOTONIC, &ts[timer]);
+    fprintf(stdout, "Timer thread started. System resolution: %ld ns\n", ts[timer].tv_nsec);
+    fflush(stdout);
+
+}
+
+/* Add delay in milliseconds */
+void utilAddDelay(uint32_t ms, timerTask timer)
+{
+    struct timespec deadline;
     /* Divide by 1000 to convert milliseconds to seconds.*/
-    res.tv_sec = (delay / 1000);
+    deadline.tv_sec = (ms / 1000);
     /* Convert milliseconds to nanoseconds*/
-    res.tv_nsec = (delay * 1000 * 1000) % (1000 * 1000 * 1000);
-    clock_nanosleep(CLOCK_MONOTONIC, 0, &res, NULL);
+    deadline.tv_nsec = (ms * 1000 * 1000) % (1000 * 1000 * 1000);
+    clock_nanosleep(CLOCK_MONOTONIC, 0, &deadline, NULL);
 }
 
 /* Function to print error messages to identify error points. */

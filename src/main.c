@@ -64,7 +64,6 @@ int main(int argc, char *argv[])
     }
 
     getCudaDeviceProperties();
-
     startRealTimeThreads();
     return 0;
 }
