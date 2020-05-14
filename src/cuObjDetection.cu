@@ -139,9 +139,10 @@ void cuDetectObject(const char *func, detectObject *objdetected)
 {
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
+    cudaEvent_t start, stop;
 
     // Take some random number of elements 256KB considered.
-    unsigned int numElements = (256 * 1024);
+    unsigned int numElements = (896 * 2048);
     size_t size = numElements * sizeof(int);
 
     // Allocate the host input vector bboxHost
@@ -169,6 +170,9 @@ void cuDetectObject(const char *func, detectObject *objdetected)
         imageHost[i] = objdetected->imageHostDetection++;
         imageDevice[i] = objdetected->imageDeviceDetection++;
     }
+
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
 
     // Allocate the device input vector devBboxDevice
     int *devBboxHost = NULL;
@@ -211,20 +215,21 @@ void cuDetectObject(const char *func, detectObject *objdetected)
         exit(EXIT_FAILURE);
     }
 
-
+    cudaEventRecord(start, 0);
     /* Runnable Host to device call to copy input data from host memory to device memory */
     detectionCopyHostToDevice(bboxHost, bboxDevice, imageHost, imageDevice,
                             devBboxHost, devBboxDevice, devImageHost, devImageDevice, size);
 
 
     // Launch the Vector Add CUDA Kernel
-    int threadsPerBlock = 256;
+    int threadsPerBlock = 2;
     int blocksPerGrid =(numElements + threadsPerBlock - 1) / threadsPerBlock;
     //fprintf(stdout,"CUDA kernel launch with %d blocks of %d threads from parent thread %s\n"
     //        , blocksPerGrid, threadsPerBlock, func);
     /* Runnable to process the image */
     processImage<<<blocksPerGrid, threadsPerBlock>>>(devBboxHost, devBboxDevice, devImageHost, devImageDevice, numElements);
     cudaDeviceSynchronize();
+
     err = cudaGetLastError();
 
     if (err != cudaSuccess)
@@ -236,6 +241,12 @@ void cuDetectObject(const char *func, detectObject *objdetected)
     /* Runnable device to host call to copy output data from device memory to host memory */
     detectionCopyDeviceToHost(bboxHost, bboxDevice, imageHost, imageDevice,
             devBboxHost, devBboxDevice, devImageHost, devImageDevice, size);
+
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+    float elapsedTime = 0.0f;
+    cudaEventElapsedTime(&elapsedTime, start, stop);
+    fprintf(stdout,"CUDA computation time for detection is %4.5f ms \n", elapsedTime);
 
     /* Copy the data to output buffer */
     memcpy((int *)&objdetected->bboxDeviceDetection, (int *)&bboxDevice[0], sizeof(int));

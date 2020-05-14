@@ -76,9 +76,9 @@ void *objDetectGetObject(void *args)
         cuDetectObject(__func__, &objectInfo);
         /* Copy the output value from local memory to shared memory. Analogous to the Cout operation.  */
         cOutSetObjectDetectedInfo();
-        fprintf(stdout, "Detection of object is complete.Wait for 300 ms.\n");
-        /* wait 300 milliseconds before next thread cycle begins */
-        utilAddDelay(300, DETECTION_TIMER);
+        fprintf(stdout, "Detection of object is complete.Wait for 400 ms.\n");
+        /* wait 400 milliseconds before next thread cycle begins */
+        utilAddDelay(400, DETECTION_TIMER);
     }
 
     return NULL;
@@ -138,9 +138,9 @@ void *objDetectStructureFromMotion(void *args)
         cuObjDetectSFM(__func__, &sfmVal);
         /* Copy the output value from local memory to shared memory. Analogous to the Cout operation.  */
         cOutSetSFMInfo();
-        fprintf(stdout,"Structure from motion task is complete. Wait for 200ms.\n ");
-        /* wait 200 milliseconds before next thread cycle begins */
-        utilAddDelay(200, SFM_TIMER);
+        fprintf(stdout,"Structure from motion task is complete. Wait for 400ms.\n ");
+        /* wait 400 milliseconds before next thread cycle begins */
+        utilAddDelay(400, SFM_TIMER);
     }
 
     return NULL;
