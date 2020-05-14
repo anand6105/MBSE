@@ -68,11 +68,11 @@ void *computeSpeedAndSteer(void *args)
         cInGetDASMData();
         /* Call CUDA kernel */
         cuProcessDASM(__func__, &steerObjectiveDASM, &speedObjectiveDASM);
-        fprintf(stdout, "DASM task complete. Wait for 150 ms\n");
         /* Copy the output value from local memory to shared memory. Analogous to the Cout operation.  */
         cOutSetDASMData();
-        /* wait 150 milliseconds before next thread cycle begins */
-        utilAddDelay(150, DASM_TIMER);
+        fprintf(stdout, "DASM task complete. Wait for 225 ms\n");
+        /* wait 225 milliseconds before next thread cycle begins */
+        utilAddDelay(225, DASM_TIMER);
     }
 
     return NULL;
@@ -124,11 +124,11 @@ void *computeOSOverhead(void *args)
         cInOSOverheadData();
         /* Call CUDA kernel */
         addOSOverhead(__func__);
-        fprintf(stdout, "OS Overhead complete. Wait for 500 ms\n");
         /* Copy the output value from local memory to shared memory. Analogous to the Cout operation.  */
         cOutOSOverheadData();
-        /* wait 500 milliseconds before next thread cycle begins */
-        utilAddDelay(500, OS_OVERHEAD_TIMER);
+        fprintf(stdout, "OS Overhead complete. Wait for 475 ms\n");
+        /* wait 475 milliseconds before next thread cycle begins */
+        utilAddDelay(475, OS_OVERHEAD_TIMER);
     }
 
     return NULL;
