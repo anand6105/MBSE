@@ -19,7 +19,10 @@
 typedef void *(*threadPool_t)(void *);
 
 
-static threadPool_t threadPool[MBSE_NUMBER_OF_THREADS] = {objDetectGetObject, objDetectStructureFromMotion, vPlanner, vCanBusPolling};
+static threadPool_t threadPool[MBSE_NUMBER_OF_THREADS] =
+                            {objDetectGetObject, objDetectStructureFromMotion,
+                             pathPlannerCalculation, pathPlannerCanBusPolling,
+                             computeSpeedAndSteer, computeOSOverhead};
 
 
 static void startRealTimeThreads(void)

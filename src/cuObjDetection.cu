@@ -17,9 +17,9 @@ extern "C"{
 }
 
 
-#define NBIN  10000000  // Number of bins
-#define NUM_BLOCK   13  // Number of thread blocks
-#define NUM_THREAD 192  // Number of threads per block
+#define NBIN      1000  // Number of bins
+#define NUM_BLOCK   32  // Number of thread blocks
+#define NUM_THREAD  32  // Number of threads per block
 /**
  * CUDA Kernel Device code
  *
@@ -29,20 +29,19 @@ __global__ void
 processImage(int *hostBbox, int *devBbox, int *hostImage, int *devImage, int numElements)
 {
     int index = blockDim.x * blockIdx.x + threadIdx.x;
-    int sampleSize = 1024;
 
     if (index < numElements)
     {
-        hostBbox[index] = sampleSize + 1;
-        devBbox[index] = sampleSize + 1;
-        hostImage[index] = sampleSize + 1;
-        devImage[index] = sampleSize + 1;
+        hostBbox[index] += hostBbox[index];
+        devBbox[index] += devBbox[index];
+        hostImage[index] += hostImage[index];
+        devImage[index] += devImage[index];
     }
 }
 
 /* Runnable Host to device call to copy input data from host memory to device memory */
 extern "C"
-static void cudaCopyHostToDevice(int *bboxHost, int *bboxDevice, int *imageHost, int *imageDevice,
+static void detectionCopyHostToDevice(int *bboxHost, int *bboxDevice, int *imageHost, int *imageDevice,
         int *devBboxHost, int *devBboxDevice, int *devImageHost, int *devImageDevice, size_t size)
 {
     // Error code to check return values for CUDA calls
@@ -53,7 +52,7 @@ static void cudaCopyHostToDevice(int *bboxHost, int *bboxDevice, int *imageHost,
 
     if (err != cudaSuccess)
     {
-        fprintf(stderr, "Failed to copy vector A from host to device (error code %s)!\n", cudaGetErrorString(err));
+        fprintf(stderr, "Failed to copy host boundary box from host to device (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 
@@ -61,7 +60,7 @@ static void cudaCopyHostToDevice(int *bboxHost, int *bboxDevice, int *imageHost,
 
     if (err != cudaSuccess)
     {
-        fprintf(stderr, "Failed to copy vector B from host to device (error code %s)!\n", cudaGetErrorString(err));
+        fprintf(stderr, "Failed to copy device boundary box from host to device (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 
@@ -69,7 +68,7 @@ static void cudaCopyHostToDevice(int *bboxHost, int *bboxDevice, int *imageHost,
 
     if (err != cudaSuccess)
     {
-        fprintf(stderr, "Failed to copy vector B from host to device (error code %s)!\n", cudaGetErrorString(err));
+        fprintf(stderr, "Failed to copy host image from host to device (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 
@@ -77,7 +76,7 @@ static void cudaCopyHostToDevice(int *bboxHost, int *bboxDevice, int *imageHost,
 
     if (err != cudaSuccess)
     {
-        fprintf(stderr, "Failed to copy vector B from host to device (error code %s)!\n", cudaGetErrorString(err));
+        fprintf(stderr, "Failed to copy device image from host to device (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 
@@ -86,7 +85,7 @@ static void cudaCopyHostToDevice(int *bboxHost, int *bboxDevice, int *imageHost,
 
 /* Runnable device to host call to copy output data from device memory to host memory */
 extern "C"
-static void cudaCopyDeviceToHost(int *bboxHost, int *bboxDevice, int *imageHost, int *imageDevice,
+static void detectionCopyDeviceToHost(int *bboxHost, int *bboxDevice, int *imageHost, int *imageDevice,
         int *devBboxHost, int *devBboxDevice, int *devImageHost, int *devImageDevice, size_t size)
 {
     // Error code to check return values for CUDA calls
@@ -97,7 +96,7 @@ static void cudaCopyDeviceToHost(int *bboxHost, int *bboxDevice, int *imageHost,
 
     if (err != cudaSuccess)
     {
-        fprintf(stderr, "Failed to copy vector C from device to host (error code %s)!\n", cudaGetErrorString(err));
+        fprintf(stderr, "Failed to copy vector host boundary box from device to host (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 
@@ -106,7 +105,7 @@ static void cudaCopyDeviceToHost(int *bboxHost, int *bboxDevice, int *imageHost,
 
     if (err != cudaSuccess)
     {
-        fprintf(stderr, "Failed to copy vector C from device to host (error code %s)!\n", cudaGetErrorString(err));
+        fprintf(stderr, "Failed to copy device boundary box from device to host (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 
@@ -115,7 +114,7 @@ static void cudaCopyDeviceToHost(int *bboxHost, int *bboxDevice, int *imageHost,
 
     if (err != cudaSuccess)
     {
-        fprintf(stderr, "Failed to copy vector C from device to host (error code %s)!\n", cudaGetErrorString(err));
+        fprintf(stderr, "Failed to copy host image from device to host (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 
@@ -124,7 +123,7 @@ static void cudaCopyDeviceToHost(int *bboxHost, int *bboxDevice, int *imageHost,
 
     if (err != cudaSuccess)
     {
-        fprintf(stderr, "Failed to copy vector C from device to host (error code %s)!\n", cudaGetErrorString(err));
+        fprintf(stderr, "Failed to copy device image from device to host (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 
@@ -141,8 +140,8 @@ void cuDetectObject(const char *func, detectObject *objdetected)
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
 
-    // Take some random number of elements 512KB considered.
-    unsigned int numElements = (512 * 1024);
+    // Take some random number of elements 256KB considered.
+    unsigned int numElements = (256 * 1024);
     size_t size = numElements * sizeof(int);
 
     // Allocate the host input vector bboxHost
@@ -165,10 +164,10 @@ void cuDetectObject(const char *func, detectObject *objdetected)
     // Initialize the host input vectors
     for (int i = 0; i < numElements; ++i)
     {
-        bboxHost[i] = objdetected->bboxHostDetection;
-        bboxDevice[i] = objdetected->bboxDeviceDetection;
-        imageHost[i] = objdetected->imageHostDetection;
-        imageDevice[i] = objdetected->imageDeviceDetection;
+        bboxHost[i] = objdetected->bboxHostDetection++;
+        bboxDevice[i] = objdetected->bboxDeviceDetection++;
+        imageHost[i] = objdetected->imageHostDetection++;
+        imageDevice[i] = objdetected->imageDeviceDetection++;
     }
 
     // Allocate the device input vector devBboxDevice
@@ -214,7 +213,7 @@ void cuDetectObject(const char *func, detectObject *objdetected)
 
 
     /* Runnable Host to device call to copy input data from host memory to device memory */
-    cudaCopyHostToDevice(bboxHost, bboxDevice, imageHost, imageDevice,
+    detectionCopyHostToDevice(bboxHost, bboxDevice, imageHost, imageDevice,
                             devBboxHost, devBboxDevice, devImageHost, devImageDevice, size);
 
 
@@ -235,7 +234,7 @@ void cuDetectObject(const char *func, detectObject *objdetected)
     }
 
     /* Runnable device to host call to copy output data from device memory to host memory */
-    cudaCopyDeviceToHost(bboxHost, bboxDevice, imageHost, imageDevice,
+    detectionCopyDeviceToHost(bboxHost, bboxDevice, imageHost, imageDevice,
             devBboxHost, devBboxDevice, devImageHost, devImageDevice, size);
 
     /* Copy the data to output buffer */
@@ -289,43 +288,137 @@ void cuDetectObject(const char *func, detectObject *objdetected)
 
 
 // Kernel that executes on the CUDA device
-__global__ void processSFMData(float *sum, int nbin, float step, int nthreads, int nblocks) {
+__global__ void processSFMData(int *image, int * matrix, int nbin, int step, int nthreads, int nblocks) {
     int i;
-    float x;
-    int idx = blockIdx.x*blockDim.x+threadIdx.x;  // Sequential thread index across the blocks
-    for (i=idx; i< nbin; i+=nthreads*nblocks) {
-        x = (i+0.5)*step;
-        sum[idx] += 4.0/(1.0+x*x);
+    int x;
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;  // Sequential thread index across the blocks
+    for (i=idx; i< nbin; i += (nthreads * nblocks)) {
+        x = (i+1)*step;
+        image[idx] += (1.0+x*x);
+        matrix[idx] += (1.0+x*x);
     }
 }
+
+
+
+/* Runnable Host to device call to copy input data from host memory to device memory */
+extern "C"
+static void sfmCopyHostToDevice(int *hostImage, int *devImage, int *hostMatrix,
+                                int *devMatrix, size_t size)
+{
+    // Error code to check return values for CUDA calls
+    cudaError_t err = cudaSuccess;
+
+    /* Copy the host input vectors to device */
+    err = cudaMemcpy(devImage, hostImage, size, cudaMemcpyHostToDevice);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy SFM host Image from host to device (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    err = cudaMemcpy(devMatrix, hostMatrix, size, cudaMemcpyHostToDevice);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy SFM host matrix from host to device (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    return;
+}
+
+
+
+/* Runnable device to host call to copy output data from device memory to host memory */
+extern "C"
+static void sfmCopyDeviceToHost(int *imageHost, int *devImage,int *matrixHost,
+                                int *devMatrix, size_t size)
+{
+    // Error code to check return values for CUDA calls
+    cudaError_t err = cudaSuccess;
+    // Copy the device result vector in device memory to the host memory
+    err = cudaMemcpy(imageHost, devImage, size, cudaMemcpyDeviceToHost);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy image Host from device to host (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    // Copy the device result vector in device memory to the host memory
+    err = cudaMemcpy(matrixHost, devMatrix, size, cudaMemcpyDeviceToHost);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy matrix host from device to host (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    return;
+}
+
 extern "C"
 void cuObjDetectSFM(const char *func, sfmData *sfmInput)
 {
-    dim3 dimGrid(NUM_BLOCK,1,1);  // Grid dimensions
-    dim3 dimBlock(NUM_THREAD,1,1);  // Block dimensions
-    float *sumHost, *sumDev;  // Pointer to host & device arrays
-    int tid;
-    float pi = 0;
+    // Error code to check return values for CUDA calls
+    cudaError_t err = cudaSuccess;
+    // Take some random number of elements 64KB considered.
+    unsigned int numElements = (64 * 1024);
+    size_t size = numElements * sizeof(int);
 
-    float step = 1.0/NBIN;  // Step size
-    size_t size = NUM_BLOCK*NUM_THREAD*sizeof(float);  //Array memory size
-    sumHost = (float *)malloc(size);  //  Allocate array on host
-    cudaMalloc((void **) &sumDev, size);  // Allocate array on device
+    int *sfmImage = (int *)malloc(size);  //  Allocate array on host
+    int *sfmMatrix = (int *)malloc(size);  //  Allocate array on host
+    if ((sfmImage == NULL) || (sfmMatrix == NULL))
+    {
+        fprintf(stderr, "Failed to allocate host vectors!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    sfmInput->imageSFMHost++;
+    sfmInput->matrixSFMHost++;
+    for(int idx = 0; idx < numElements; idx++){
+        sfmImage[idx] = sfmInput->imageSFMHost;
+        sfmMatrix[idx] = sfmInput->matrixSFMHost;
+    }
+
+    int *devImage = NULL;
+    err = cudaMalloc((void **)&devImage, size);
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to allocate device Image (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    int *devMatrix = NULL;
+    err = cudaMalloc((void **) &devMatrix, size);  // Allocate array on device
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to allocate device vector devMatrix (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+
     // Initialize array in device to 0
-    cudaMemset(sumDev, 0, size);
+    cudaMemset(devImage, 0, size);
+    cudaMemset(devMatrix, 0, size);
+    sfmCopyHostToDevice(sfmImage, devImage, sfmMatrix, devMatrix, size);
+    // Launch the Vector Add CUDA Kernel
+    int threadsPerBlock = 32;
+    int blocksPerGrid =(numElements + threadsPerBlock - 1) / threadsPerBlock;
+    int step = 1;
     // Do calculation on device
-    processSFMData <<<dimGrid, dimBlock>>> (sumDev, NBIN, step, NUM_THREAD, NUM_BLOCK); // call CUDA kernel
-    // Retrieve result from device and store it in host array
-    cudaMemcpy(sumHost, sumDev, size, cudaMemcpyDeviceToHost);
-    for(tid=0; tid<NUM_THREAD*NUM_BLOCK; tid++)
-        pi += sumHost[tid];
-    pi *= step;
+    processSFMData <<<blocksPerGrid, threadsPerBlock>>> (devImage, devMatrix, numElements, step, threadsPerBlock, blocksPerGrid); // call CUDA kernel
+    cudaDeviceSynchronize();
 
-    // Print results
-    //printf("PI = %f\n",pi);
+    sfmCopyDeviceToHost(sfmImage, devImage, sfmMatrix, devMatrix, size);
 
     // Cleanup
-    free(sumHost);
-    cudaFree(sumDev);
+    cudaFree(devMatrix);
+    cudaFree(devImage);
+    free(sfmImage);
+    free(sfmMatrix);
+
 }
 

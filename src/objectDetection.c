@@ -95,7 +95,6 @@ static void cInGetSFMInfo()
 
 static void cOutSetSFMInfo()
 {
-    /* Divide the length by 4 as it is an integer pointer */
     int dataLength = sizeof(sfmVal);
     shmemWriteSFMDataOutLabel(0, dataLength, &sfmVal);
 }
