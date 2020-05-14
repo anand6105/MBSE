@@ -375,8 +375,9 @@ void cuObjDetectSFM(const char *func, sfmData *sfmInput)
 {
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
+    cudaEvent_t start, stop;
     // Take some random number of elements 64KB considered.
-    unsigned int numElements = (64 * 1024);
+    unsigned int numElements = (768 * 1024);
     size_t size = numElements * sizeof(int);
 
     int *sfmImage = (int *)malloc(size);  //  Allocate array on host
@@ -393,6 +394,9 @@ void cuObjDetectSFM(const char *func, sfmData *sfmInput)
         sfmImage[idx] = sfmInput->imageSFMHost;
         sfmMatrix[idx] = sfmInput->matrixSFMHost;
     }
+
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
 
     int *devImage = NULL;
     err = cudaMalloc((void **)&devImage, size);
@@ -414,9 +418,11 @@ void cuObjDetectSFM(const char *func, sfmData *sfmInput)
     // Initialize array in device to 0
     cudaMemset(devImage, 0, size);
     cudaMemset(devMatrix, 0, size);
+
+    cudaEventRecord(start, 0);
     sfmCopyHostToDevice(sfmImage, devImage, sfmMatrix, devMatrix, size);
     // Launch the Vector Add CUDA Kernel
-    int threadsPerBlock = 32;
+    int threadsPerBlock = 24;
     int blocksPerGrid =(numElements + threadsPerBlock - 1) / threadsPerBlock;
     int step = 1;
     // Do calculation on device
@@ -424,6 +430,12 @@ void cuObjDetectSFM(const char *func, sfmData *sfmInput)
     cudaDeviceSynchronize();
 
     sfmCopyDeviceToHost(sfmImage, devImage, sfmMatrix, devMatrix, size);
+
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+    float elapsedTime = 0.0f;
+    cudaEventElapsedTime(&elapsedTime, start, stop);
+    fprintf(stdout,"CUDA computation time for SFM task is %4.5f ms \n", elapsedTime);
 
     // Cleanup
     cudaFree(devMatrix);
