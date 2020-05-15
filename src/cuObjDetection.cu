@@ -1,15 +1,37 @@
-/*
- ************************************************************************************
- *   Copyright (c) 2020 Dortmund University of Applied Sciences and Arts and others.
+/************************************************************************************
+ * Copyright (C) 2020 Dortmund University of Applied Sciences and Arts and Others.  *
+ *                                                                                  *
+ * This file is part of the implementation of 2019 Waters Challenge                 *
+ *                                                                                  *
+ * The processing power offered by GPUs and their capability to execute parallel    *
+ * workloads is exploited to execute and accelerate applications related to         *
+ * advanced driver assistance systems.                                              *
+ *                                                                                  *
+ * The challenge consists in analytically master the complex HW/SW system (that     *
+ * will be available as Amalthea model) to answer the following questions:          *
+ *                                                                                  *
+ * Response Time Computation:                                                       *
+ *  a) Given an application consisting of a set of dependent tasks and a given      *
+ *     mapping, calculate its end-to-end response time.                             *
+ *  b) The response time should account for the time for the copy engine to         *
+ *     transfer data between the CPU and the GPU.                                   *
+ *  c) The response time should account for the time for the data transfers between *
+ *     the CPU and the shared main memory considering a read/execute/write semantic.*
+ *  d) Optionally the off-loading mechanism (synchronous/asynchronous) can be       *
+ *     changed to further optimize the end-to-end latencies.                        *
+ ************************************************************************************/
+
+
+/**
+ * @file cuObjDetection.cu
+ * @author Anand Prakash
+ * @date 17 April 2020
+ * @brief This file contains the CUDA kernel implementation of Detection and Structure-
+ *        from-motion tasks.
  *
- *   Contributors:
- *        Dortmund University of Applied Sciences and Arts -
- *        initial API and implementation
- ************************************************************************************
- * cuObjDetection.cu
+ * This file implements runnables executed for Detection and Structure-from-Motion tasks.
  *
- *  Created on: Apr 17, 2020
- *      Author: Anand Prakash
+ * @see https://www.ecrts.org/archives/fileadmin/WebsitesArchiv/ecrts2019/waters/index.html
  */
 
 extern "C"{
@@ -17,9 +39,6 @@ extern "C"{
 }
 
 
-#define NBIN      1000  // Number of bins
-#define NUM_BLOCK   32  // Number of thread blocks
-#define NUM_THREAD  32  // Number of threads per block
 /**
  * CUDA Kernel Device code
  *
@@ -131,9 +150,17 @@ static void detectionCopyDeviceToHost(int *bboxHost, int *bboxDevice, int *image
 }
 
 
-/* Function to detect the object and process the image. The output of this function is provided
- * to the pathPlanner for further processing */
-
+/**
+ * @brief Function to process the Detection task.
+ *
+ * Function to detect the object and process the image. The output of this function is provided
+ * to the pathPlanner for further processing. It has three runnables.
+ *
+ * @param func              Function name
+ * @param objdetected       Pointer to structure to detectObject input data
+ *
+ * @return void
+ */
 extern "C"
 void cuDetectObject(const char *func, detectObject *objdetected)
 {
@@ -224,8 +251,6 @@ void cuDetectObject(const char *func, detectObject *objdetected)
     // Launch the Vector Add CUDA Kernel
     int threadsPerBlock = 2;
     int blocksPerGrid =(numElements + threadsPerBlock - 1) / threadsPerBlock;
-    //fprintf(stdout,"CUDA kernel launch with %d blocks of %d threads from parent thread %s\n"
-    //        , blocksPerGrid, threadsPerBlock, func);
     /* Runnable to process the image */
     processImage<<<blocksPerGrid, threadsPerBlock>>>(devBboxHost, devBboxDevice, devImageHost, devImageDevice, numElements);
     cudaDeviceSynchronize();
@@ -246,7 +271,7 @@ void cuDetectObject(const char *func, detectObject *objdetected)
     cudaEventSynchronize(stop);
     float elapsedTime = 0.0f;
     cudaEventElapsedTime(&elapsedTime, start, stop);
-    fprintf(stdout,"CUDA computation time for detection is %4.5f ms \n", elapsedTime);
+    fprintf(stdout,"Detection is %4.5f ms \n", elapsedTime);
 
     /* Copy the data to output buffer */
     memcpy((int *)&objdetected->bboxDeviceDetection, (int *)&bboxDevice[0], sizeof(int));
@@ -298,7 +323,7 @@ void cuDetectObject(const char *func, detectObject *objdetected)
 
 
 
-// Kernel that executes on the CUDA device
+// Kernel that executes on the CUDA device to process the SFM data
 __global__ void processSFMData(int *image, int * matrix, int nbin, int step, int nthreads, int nblocks) {
     int i;
     int x;
@@ -370,14 +395,26 @@ static void sfmCopyDeviceToHost(int *imageHost, int *devImage,int *matrixHost,
     return;
 }
 
+
+/**
+ * @brief Function to process the SFM task.
+ *
+ * The functions process the data received from the input buffer and generates the input data for the
+ * planner task. It has three runnables.
+ *
+ * @param func           Function name
+ * @param sfmInput       Pointer to structure to SFM input data
+ *
+ * @return void
+ */
 extern "C"
 void cuObjDetectSFM(const char *func, sfmData *sfmInput)
 {
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
     cudaEvent_t start, stop;
-    // Take some random number of elements 64KB considered.
-    unsigned int numElements = (768 * 1024);
+    // Take some random number of elements 768 * 768 considered.
+    unsigned int numElements = (512 * 512);
     size_t size = numElements * sizeof(int);
 
     int *sfmImage = (int *)malloc(size);  //  Allocate array on host
@@ -421,8 +458,8 @@ void cuObjDetectSFM(const char *func, sfmData *sfmInput)
 
     cudaEventRecord(start, 0);
     sfmCopyHostToDevice(sfmImage, devImage, sfmMatrix, devMatrix, size);
-    // Launch the Vector Add CUDA Kernel
-    int threadsPerBlock = 24;
+    // Taking thread per block as 64 and step size as 1
+    int threadsPerBlock = 64;
     int blocksPerGrid =(numElements + threadsPerBlock - 1) / threadsPerBlock;
     int step = 1;
     // Do calculation on device
@@ -435,7 +472,7 @@ void cuObjDetectSFM(const char *func, sfmData *sfmInput)
     cudaEventSynchronize(stop);
     float elapsedTime = 0.0f;
     cudaEventElapsedTime(&elapsedTime, start, stop);
-    fprintf(stdout,"CUDA computation time for SFM task is %4.5f ms \n", elapsedTime);
+    fprintf(stdout,"SFM task is %4.5f ms \n", elapsedTime);
 
     // Cleanup
     cudaFree(devMatrix);
