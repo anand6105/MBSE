@@ -72,7 +72,7 @@ static void cOutSetObjectDetectedInfo()
  * @details This task is responsible of detecting and classifying the objects in the road.
  * All the objects detected are visualized and the information produced is sent
  * to the Planner task. It is executed on core number 0 on Jetson TX2 ARM A57 core
- * with the thread priority of 94.
+ * with the thread priority of 98.
  *
  * @param[in] args Optional argument. Currently not in use.
  *
@@ -107,7 +107,7 @@ void *objDetectGetObject(void *args)
     clock_gettime(CLOCK_MONOTONIC, &deadline);
     while(1)
     {
-        /* wait 500 milliseconds before next thread cycle begins */
+        /* wait 1000 milliseconds before next thread cycle begins */
         utilAddDelay(1000, &deadline);
         /* Copy the input values from shared memory to the local memory. Analogous to the CIn operation. */
         cInGetObjectDetectedInfo();
@@ -179,7 +179,7 @@ void *objDetectStructureFromMotion(void *args)
     clock_gettime(CLOCK_MONOTONIC, &deadline);
     while(1)
     {
-        /* wait 300 milliseconds before next thread cycle begins */
+        /* wait 1000 milliseconds before next thread cycle begins */
         utilAddDelay(1000, &deadline);
         /* Copy the input values from shared memory to the local memory. Analogous to the CIn operation. */
         cInGetSFMInfo();

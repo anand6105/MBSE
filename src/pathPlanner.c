@@ -124,7 +124,7 @@ void *pathPlannerCalculation(void *args)
     clock_gettime(CLOCK_MONOTONIC, &deadline);
     while(1)
     {
-        /* wait 500 milliseconds before next thread cycle begins */
+        /* wait 1000 milliseconds before next thread cycle begins */
         utilAddDelay(1000, &deadline);
         /* Copy the input values from shared memory to the local memory. Analogous to the CIn operation. */
         cInPlannerData();
@@ -192,7 +192,7 @@ void *pathPlannerCanBusPolling(void *args)
     clock_gettime(CLOCK_MONOTONIC, &deadline);
     while(1)
     {
-        /* wait 500 milliseconds before next thread cycle begins */
+        /* wait 1000 milliseconds before next thread cycle begins */
         utilAddDelay(1000, &deadline);
         /* Copy the input values from shared memory to the local memory. Analogous to the CIn operation. */
         cInGetCanBusPollingData();

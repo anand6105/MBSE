@@ -104,7 +104,7 @@ void *computeSpeedAndSteer(void *args)
     clock_gettime(CLOCK_MONOTONIC, &deadline);
     while(1)
     {
-        /* wait 400 milliseconds before next thread cycle begins */
+        /* wait 1000 milliseconds before next thread cycle begins */
         utilAddDelay(1000, &deadline);
         /* Copy the input values from shared memory to the local memory. Analogous to the CIn operation. */
         cInGetDASMData();
@@ -186,8 +186,8 @@ void *computeOSOverhead(void *args)
     clock_gettime(CLOCK_MONOTONIC, &deadline);
     while(1)
     {
+        /* wait 1000 milliseconds before next thread cycle begins */
         utilAddDelay(1000, &deadline);
-        /* wait 450 milliseconds before next thread cycle begins */
         /* Copy the input values from shared memory to the local memory. Analogous to the CIn operation. */
         cInOSOverheadData();
         /* Call CUDA kernel */
