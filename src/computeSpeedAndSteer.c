@@ -63,14 +63,14 @@ static void cOutSetDASMData()
     shmemWritePlannerDataOutLabel(2, dataLength, speedObjectiveDASM);
 }
 
-/*
+/**
  * @brief This function implements the DASM task.
  *
  * This task computes and establishes the speed and steer that must be effectively
  * employed from the information that is provided by the Path Planner task. It is executed
- * on core number 3 on Jetson TX2 ARM A57 core with the thread priority of 97.
+ * on core number 3 on Jetson TX2 ARM A57 core with the thread priority of 99.
  *
- * @param args Optional argument. Currently not in use.
+ * @param[in] args Optional argument. Currently not in use.
  *
  * @return void
  **/
@@ -144,19 +144,19 @@ static void cOutOSOverheadData()
     shmemWriteLaneBoundaryBufferLabel(0, sizeof(int), localVal);
 }
 
-/*
-/*
- * @brief This task is used to add the OS overhead to the overall tasks based on the
- *        Amalthea task model.
+
+/**
+ * @brief This task is used to add the OS overhead to the overall tasks
+ * based on the Amalthea task model.
  *
- * This task adds an additional overhead to the overall application. It is used to
- * simulate the overhead that occur in real scenario. It is executed
- * on core number 3 on Jetson TX2 ARM A57 core with the thread priority of 89.
+ * This task adds an additional overhead to the overall application. It is
+ * used to simulate the overhead that occur in real scenario. It is executed
+ * on core number 3 on Jetson TX2 ARM A57 core with the thread priority of 99.
  *
- * @param args Optional argument. Currently not in use.
+ * @param[in] args Optional argument. Currently not in use.
  *
  * @return void
- **/
+ */
 void *computeOSOverhead(void *args)
 {
     uint32_t threadPolicy = 0;
@@ -175,7 +175,7 @@ void *computeOSOverhead(void *args)
         exit(3);
     }
 
-    /* Set the priority to 98. Max priority is 99 minus 1. */
+    /* Set the priority to 99 */
     utilSetThreadPriority(threadId, 0);
 
     pthread_getschedparam(threadId, &threadPolicy, &param);

@@ -41,32 +41,32 @@
 
 typedef struct detectObject_t
 {
-    int bboxDeviceDetection;
-    int bboxHostDetection;
-    int imageHostDetection;
-    int imageDeviceDetection;
+    int bboxDeviceDetection;     /**< Boundary box device detection */
+    int bboxHostDetection;       /**< Boundary box host detection */
+    int imageHostDetection;      /**< Image host detection */
+    int imageDeviceDetection;    /**< Image device detection */
 } detectObject;
 
 typedef struct sfmData_t
 {
-    int matrixSFMHost;
-    int imageSFMHost;
+    int matrixSFMHost;      /**< SFM matrix host data */
+    int imageSFMHost;       /**< SFM Image host data */
 } sfmData;
 
 typedef struct plannerData_t
 {
-    int canData;
-    int yawRate;
-    int velocity;
-    int xCar;
-    int yawCar;
-    int yCar;
-    int matrixSFM;
-    int bBoxHost;
-    int occupancyGrid;
-    int laneBoundary;
-    int steerObjective;
-    int speedObjective;
+    int canData;         /**< Can polling data */
+    int yawRate;         /**< Yaw rate  in x-direction */
+    int velocity;        /**< Velocity of the vehicle */
+    int xCar;            /**< Position of the vehicle on x co-ordinate */
+    int yawCar;          /**< Yaw rate  in y-direction */
+    int yCar;            /**< Position of the vehicle on y co-ordinate */
+    int matrixSFM;       /**< Input SFM Data */
+    int bBoxHost;        /**< Input detection data */
+    int occupancyGrid;   /**< Occupancy Grid */
+    int laneBoundary;    /**< Lane boundary */
+    int steerObjective;  /**< Steer control data */
+    int speedObjective;  /* Speed data */
 } plannerData;
 
 

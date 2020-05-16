@@ -25,13 +25,14 @@
 /**
  * @file objectDetection.c
  * @author Anand Prakash
- * @date 22 April 2020
- * @brief This file contains the basic implementation of the Detection and Structure
- *        from motion tasks.
+ * @date 22 April 2020.
+ *
+ * @brief This file contains the basic implementation of the Detection and Structure from motion tasks.
  *
  * The detection task is responsible of detecting and classifying the objects in the road.
  * It uses a machine learning approach. All the objects detected are visualized and the
  * information produced is sent to the Planner task.
+ *
  * Structure-From-Motion task is a method for estimating 3-D structures (depth) from vehicle
  * motion and sequences of 2-D images. This task returns a matrix of points representing
  * the distance with respect the objects of the image.
@@ -64,19 +65,19 @@ static void cOutSetObjectDetectedInfo()
     shmemWriteDetectionDataOutLabel(0, dataLength, &objectInfo);
 }
 
-/*
-/*
- * @brief This task is used perform the detection functionality
+
+/**
+ * @brief This task is used perform the detection functionality.
  *
- * This task is responsible of detecting and classifying the objects in the road.
+ * @details This task is responsible of detecting and classifying the objects in the road.
  * All the objects detected are visualized and the information produced is sent
  * to the Planner task. It is executed on core number 0 on Jetson TX2 ARM A57 core
  * with the thread priority of 94.
  *
- * @param args Optional argument. Currently not in use.
+ * @param[in] args Optional argument. Currently not in use.
  *
  * @return void
- **/
+ */
 void *objDetectGetObject(void *args)
 {
     uint32_t threadPolicy = 0;
@@ -137,7 +138,7 @@ static void cOutSetSFMInfo()
 }
 
 
-/*
+/**
  * @brief This task is used perform the Structure-From-Motion functionality.
  *
  * Structure-From-Motion is a method for estimating 3-D structures (depth) from
@@ -145,10 +146,10 @@ static void cOutSetSFMInfo()
  * representing the distance with respect the objects of the image. It is executed on
  * core number 0 on Jetson TX2 ARM A57 core with the thread priority of 99.
  *
- * @param args Optional argument. Currently not in use.
+ * @param[in] args Optional argument. Currently not in use.
  *
  * @return void
- **/
+ */
 void *objDetectStructureFromMotion(void *args)
 {
     uint32_t threadPolicy = 0;

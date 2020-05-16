@@ -40,7 +40,7 @@ extern "C"{
 
 
 /**
- * CUDA Kernel Device code
+ * @brief CUDA Kernel Device code
  *
  * Runnable to Process the image to detect and classify the objects by creating the Boundary Box.
  */
@@ -156,8 +156,8 @@ static void detectionCopyDeviceToHost(int *bboxHost, int *bboxDevice, int *image
  * Function to detect the object and process the image. The output of this function is provided
  * to the pathPlanner for further processing. It has three runnables.
  *
- * @param func              Function name
- * @param objdetected       Pointer to structure to detectObject input data
+ * @param[in] func              Function name
+ * @param[inout] objdetected       Pointer to structure to detectObject input data
  *
  * @return void
  */
@@ -323,7 +323,10 @@ void cuDetectObject(const char *func, detectObject *objdetected)
 
 
 
-// Kernel that executes on the CUDA device to process the SFM data
+
+/**
+ * @brief Kernel that executes on the CUDA device to process the SFM data
+ */
 __global__ void processSFMData(int *image, int * matrix, int nbin, int step, int nthreads, int nblocks) {
     int i;
     int x;
@@ -402,8 +405,8 @@ static void sfmCopyDeviceToHost(int *imageHost, int *devImage,int *matrixHost,
  * The functions process the data received from the input buffer and generates the input data for the
  * planner task. It has three runnables.
  *
- * @param func           Function name
- * @param sfmInput       Pointer to structure to SFM input data
+ * @param[in] func           Function name
+ * @param[inout] sfmInput       Pointer to structure to SFM input data
  *
  * @return void
  */

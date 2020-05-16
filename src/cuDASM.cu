@@ -40,7 +40,9 @@ extern "C"{
 }
 
 
-// Kernel that executes on the CUDA device to compute the speed and steer for DASM task.
+/**
+ * @brief Kernel that executes on the CUDA device to compute the speed and steer for DASM task.
+ */
 __global__ void computeDASM( int *devSpeed, int *devSteer, int step, int size )
 {
     int tid = threadIdx.x + blockIdx.x * blockDim.x;
@@ -60,9 +62,9 @@ __global__ void computeDASM( int *devSpeed, int *devSteer, int step, int size )
  * The functions process the data received from the planner task and generate the steer and speed
  * output. The task consists of one runnable.
  *
- * @param func       Function name
- * @param steer      Pointer to input steer from planner. Data is modified after processing.
- * @param speed      Pointer to input speed from planner. Data is modified after processing.
+ * @param func[in]          Function name
+ * @param steer[inout]      Pointer to input steer from planner. Data is modified after processing.
+ * @param speed[inout]      Pointer to input speed from planner. Data is modified after processing.
  *
  * @return void
  */
@@ -123,7 +125,10 @@ void cuProcessDASM(const char *func, int *steer, int *speed)
 }
 
 
-// Kernel that executes on the CUDA device the OS overhead task.
+
+/**
+ * @brief Kernel that executes on the CUDA device the OS overhead task.
+ */
 __global__ void osOverhead(int * A, int * B, int * C, int size) {
 
     int ROW = blockIdx.y*blockDim.y+threadIdx.y;
@@ -146,7 +151,7 @@ __global__ void osOverhead(int * A, int * B, int * C, int size) {
  *
  * The functions adds some OS overhead to simulate the real scenario.
  *
- * @param func       Function name
+ * @param func[in]       Function name
  *
  * @return void
  */

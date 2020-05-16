@@ -70,16 +70,16 @@ static int gridDataBuffer[DATA_GRID_BUFFER];
 static int laneBoundaryBuffer[DATA_LANE_BOUNDARY_BUFFER];
 
 
-/*
+/**
  * @brief Function to read to the Detection and SFM Input data buffer
  *
  * This function read to the Detection and SFM Input data buffer. This buffer is used as an input
  * to SFM and Detection task.
  *
- * @param index  Index at which the data is to be written.
+ * @param[in] index  Index at which the data is to be written.
  *
  * @return       The value at the requested index, -1 in case the index is out of bounds.
- **/
+ */
 int shmemReadSFMDetectionDataInLabel(unsigned int index)
 {
     if (index < DATA_IN_SFM_DETECTION_BUFFER)
@@ -91,15 +91,15 @@ int shmemReadSFMDetectionDataInLabel(unsigned int index)
 
 
 
-/*
+/**
  * @brief Function to read to the SFM Output data buffer
  *
  * This function read the SFM output data buffer. This buffer is used as an input to Planner task.
  *
- * @param index  Index at which the data is to be written.
+ * @param[in] index  Index at which the data is to be written.
  *
  * @return       The value at the requested index, -1 in case the index is out of bounds.
- **/
+ */
 int shmemReadSFMDataOutLabel(unsigned int index)
 {
     if (index < DATA_OUT_SFM_BUFFER)
@@ -110,15 +110,15 @@ int shmemReadSFMDataOutLabel(unsigned int index)
 }
 
 
-/*
+/**
  * @brief Function to read to the Detection Output data buffer
  *
  * This function read the Detection output data buffer. This buffer is used as an input to Planner task.
  *
- * @param index  Index at which the data is to be written.
+ * @param[in] index  Index at which the data is to be written.
  *
  * @return       The value at the requested index, -1 in case the index is out of bounds.
- **/
+ */
 int shmemReadDetectionDataOutLabel(unsigned int index)
 {
     if (index < DATA_OUT_DETECTION_BUFFER)
@@ -128,15 +128,15 @@ int shmemReadDetectionDataOutLabel(unsigned int index)
     return -1;
 }
 
-/*
+/**
  * @brief Function to read to the Planner Output data buffer
  *
  * This function read the Planner output data buffer. This buffer is used as an input to DASM task.
  *
- * @param index  Index at which the data is to be written.
+ * @param[in] index  Index at which the data is to be written.
  *
  * @return       The value at the requested index, -1 in case the index is out of bounds.
- **/
+ */
 int shmemReadPlannerBufferLabel(unsigned int index)
 {
     if (index < DATA_OUT_PLANNER_BUFFER)
@@ -146,15 +146,15 @@ int shmemReadPlannerBufferLabel(unsigned int index)
     return -1;
 }
 
-/*
+/**
  * @brief Function to read to the data grid buffer
  *
  * This function read the data grid buffer. This buffer is used as an input to Planner task.
  *
- * @param index  Index at which the data is to be written.
+ * @param[in] index  Index at which the data is to be written.
  *
  * @return       The value at the requested index, -1 in case the index is out of bounds.
- **/
+ */
 int shmemReadGridDataBufferLabel(unsigned int index)
 {
     if (index < DATA_GRID_BUFFER)
@@ -165,15 +165,15 @@ int shmemReadGridDataBufferLabel(unsigned int index)
 }
 
 
-/*
+/**
  * @brief Function to read to the lane boundary data buffer
  *
  * This function read the lane boundary data buffer. This buffer is used as an input to Planner task.
  *
- * @param index  Index at which the data is to be written.
+ * @param[in] index  Index at which the data is to be written.
  *
  * @return       The value at the requested index, -1 in case the index is out of bounds.
- **/
+ */
 int shmemReadLaneBoundaryBufferLabel(unsigned int index)
 {
     if (index < DATA_LANE_BOUNDARY_BUFFER)
@@ -184,18 +184,18 @@ int shmemReadLaneBoundaryBufferLabel(unsigned int index)
 }
 
 
-/*
+/**
  * @brief Function to write to the Detection data buffer
  *
  * This function writes to the Detection data buffer. This buffer is used as an input
  * to Planner task.
  *
- * @param offset   Offset of the buffer.
- * @param size     Length of data.
- * @param data     Actual data that needs to be copied.
+ * @param[in] offset   Offset of the buffer.
+ * @param[in] size     Length of data.
+ * @param[in] data     Actual data that needs to be copied.
  *
  * @return void
- **/
+ */
 void shmemWriteDetectionDataOutLabel(int offset, int size, void *data)
 {
     if (offset < DATA_OUT_DETECTION_BUFFER)
@@ -209,18 +209,18 @@ void shmemWriteDetectionDataOutLabel(int offset, int size, void *data)
 }
 
 
-/*
+/**
  * @brief Function to write to the SFM data buffer
  *
  * This function writes to the SFM data buffer. This buffer is used as an input
  * to Planner task.
  *
- * @param offset   Offset of the buffer.
- * @param size     Length of data.
- * @param data     Actual data that needs to be copied.
+ * @param[in] offset   Offset of the buffer.
+ * @param[in] size     Length of data.
+ * @param[in] data     Actual data that needs to be copied.
  *
  * @return void
- **/
+ */
 void shmemWriteSFMDataOutLabel(int offset, int size, void *data)
 {
     if (offset < DATA_OUT_SFM_BUFFER)
@@ -234,18 +234,18 @@ void shmemWriteSFMDataOutLabel(int offset, int size, void *data)
 }
 
 
-/*
+/**
  * @brief Function to write to the Planner data buffer
  *
  * This function writes to the Planner data buffer. This buffer is used as an input
  * to DASM task.
  *
- * @param offset   Offset of the buffer.
- * @param size     Length of data.
- * @param data     Actual data that needs to be copied.
+ * @param[in] offset   Offset of the buffer.
+ * @param[in] size     Length of data.
+ * @param[in] data     Actual data that needs to be copied.
  *
  * @return void
- **/
+ */
 void shmemWritePlannerDataOutLabel(int offset, int size, int data)
 {
     if (offset < DATA_OUT_PLANNER_BUFFER)
@@ -259,18 +259,18 @@ void shmemWritePlannerDataOutLabel(int offset, int size, int data)
 }
 
 
-/*
+/**
  * @brief Function to write to the SFM and detection Input buffer
  *
  * This function writes to the SFM and detection Input buffer. This buffer is used as an input
  * to SFM and detection task.
  *
- * @param offset   Offset of the buffer.
- * @param size     Length of data.
- * @param data     Actual data that needs to be copied.
+ * @param[in] offset   Offset of the buffer.
+ * @param[in] size     Length of data.
+ * @param[in] data     Actual data that needs to be copied.
  *
  * @return void
- **/
+ */
 void shmemWriteSFMDetectionDataInLabel(int offset, int size, int data)
 {
     if (offset < DATA_IN_SFM_DETECTION_BUFFER)
@@ -283,18 +283,18 @@ void shmemWriteSFMDetectionDataInLabel(int offset, int size, int data)
     }
 }
 
-/*
+/**
  * @brief Function to write to the data grid buffer
  *
  * This function writes to the data grid buffer. This buffer is used as an input
  * to Planner task
  *
- * @param offset   Offset of the buffer.
- * @param size     Length of data.
- * @param data     Actual data that needs to be copied.
+ * @param[in] offset   Offset of the buffer.
+ * @param[in] size     Length of data.
+ * @param[in] data     Actual data that needs to be copied.
  *
  * @return void
- **/
+ */
 void shmemWriteGridDataBufferLabel(int offset, int size, int data)
 {
     if (offset < DATA_GRID_BUFFER)
@@ -308,18 +308,18 @@ void shmemWriteGridDataBufferLabel(int offset, int size, int data)
 }
 
 
-/*
+/**
  * @brief Function to write to the lane boundary buffer
  *
  * This function writes to the lane boundary buffer. This buffer is used as an input
  * to Planner task
  *
- * @param offset   Offset of the buffer.
- * @param size     Length of data.
- * @param data     Actual data that needs to be copied.
+ * @param[in] offset   Offset of the buffer.
+ * @param[in] size     Length of data.
+ * @param[in] data     Actual data that needs to be copied.
  *
  * @return void
- **/
+ */
 void shmemWriteLaneBoundaryBufferLabel(int offset, int size, int data)
 {
     if (offset < DATA_LANE_BOUNDARY_BUFFER)

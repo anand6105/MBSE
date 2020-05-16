@@ -38,8 +38,9 @@ extern "C"{
     #include "mbseCuda.h"
 }
 
-
-// Kernel that executes on the CUDA device to process the CAN Bus data.
+/**
+ * @brief Kernel that executes on the CUDA device to process the CAN Bus data.
+ */
 __global__ void getCanBusData(int *canData, int size, int nthreads, int nblocks) {
     int i;
     int idx = blockIdx.x*blockDim.x+threadIdx.x;  // Sequential thread index across the blocks
@@ -54,8 +55,8 @@ __global__ void getCanBusData(int *canData, int size, int nthreads, int nblocks)
  * The functions process the data obtained from the global buffer. It provides this value as n input
  * to Planner task.
  *
- * @param func                     Function name
- * @param hostCanPollingData       Pointer to host can polling data.
+ * @param[in]    func                     Function name
+ * @param[inout] hostCanPollingData       Pointer to host can polling data.
  *
  * @return void
  */
@@ -109,7 +110,10 @@ void cuPlannerFetchCanBusData(const char *func, int *hostCanPollingData)
 
 
 
-// Kernel that executes on the CUDA device to process the path planner task.
+
+/**
+ * @brief  Kernel that executes on the CUDA device to process the path planner task.
+ */
 __global__ void pathPlan( int *devSpeed, int *devSteer, int size )
 {
     int tid = threadIdx.x + blockIdx.x * blockDim.x;
@@ -126,8 +130,8 @@ __global__ void pathPlan( int *devSpeed, int *devSteer, int size )
  * The functions process the data received from the SFM, Detection, Can BUs Polling,
  * grid data and lane boundary detection and process the data to generate the input to the DASM task.
  *
- * @param func       Function name
- * @param data       Pointer to structure to planner input data
+ * @param[in]    func       Function name
+ * @param[inout] data       Pointer to structure to planner input data
  *
  * @return void
  */

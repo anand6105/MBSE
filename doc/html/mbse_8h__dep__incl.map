@@ -1,0 +1,8 @@
+<map id="inc/mbse.h" name="inc/mbse.h">
+<area shape="rect" id="node2" href="$computeSpeedAndSteer_8c.html" title="This file contains the basic implementation of the DASM and OS overhead tasks. " alt="" coords="5,80,201,107"/>
+<area shape="rect" id="node3" href="$main_8c.html" title="This file contains the entry point of the applications and consists of the initialization of memory..." alt="" coords="226,80,309,107"/>
+<area shape="rect" id="node4" href="$objectDetection_8c.html" title="This file contains the basic implementation of the Detection and Structure from motion tasks..." alt="" coords="333,80,479,107"/>
+<area shape="rect" id="node5" href="$pathPlanner_8c.html" title="This file contains the basic implementation of the Planner task and CAN Bus polling task..." alt="" coords="504,80,628,107"/>
+<area shape="rect" id="node6" href="$sharedMemory_8c.html" title="This file declares and implement the read and write operation of all the shared memory. " alt="" coords="653,80,794,107"/>
+<area shape="rect" id="node7" href="$utils_8c.html" title="This file declares and implement the utility functions used in the application. " alt="" coords="819,80,897,107"/>
+</map>

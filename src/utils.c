@@ -38,17 +38,17 @@
 #include "mbse.h"
 
 
-/*
+/**
  * @brief Function to set the thread priority.
  *
  * This task sets the thread priority based on the threadId and the customPrio provided
  * The priority of the thread is set to max priority minus the custom priority
  *
- * @param threadId      Thread ID whose priority needs to be set.
- * @param customPrio    Priority offset of the thread from the maximum priority
+ * @param[in] threadId      Thread ID whose priority needs to be set.
+ * @param[in] customPrio    Priority offset of the thread from the maximum priority
  *
  * @return void
- **/
+ */
 void utilSetThreadPriority(pthread_t threadId, int customPrio)
 {
     struct sched_param param;
@@ -63,17 +63,17 @@ void utilSetThreadPriority(pthread_t threadId, int customPrio)
 }
 
 
-/*
+/**
  * @brief Function to add delay to the task.
  *
  * This function adds delay to the task by sleeping for the time provided in the argument
  * in terms of millisecond.
  *
- * @param ms          Time in millisecond for which the thread needs to sleep.
- * @param deadline    Pointer to the timespec for the next deadline
+ * @param[in]    ms          Time in millisecond for which the thread needs to sleep.
+ * @param[inout] deadline    Pointer to the timespec for the next deadline
  *
  * @return void
- **/
+ */
 void utilAddDelay(uint32_t ms, struct timespec *deadline)
 {
     /* Calculate next deadline */
@@ -92,15 +92,15 @@ void utilAddDelay(uint32_t ms, struct timespec *deadline)
 
 
 
-/*
+/**
  * @brief Function to print error message thrown from a particular point in application code.
  *
  * This function prints the error code from which the error was thrown.
  *
- * @param at  Error code.
+ * @param[in] at  Error code.
  *
  * @return void
- **/
+ */
 void error(int at)
 {
     /* Just exit on error */

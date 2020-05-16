@@ -72,8 +72,8 @@ void *pathPlannerCanBusPolling(void *args);
  * This trajectory is defined as a spline, that is, a line built through polynomial
  * interpolation at times on the map that represents at each point the position
  * and orientation that the car will have to follow. The planner sends the goal state
- *  of the vehicle (i.e., target steer and speed) to the DASM task that is in charge
- *  of writing the commands in the CAN line the effective steer and speed to apply.*/
+ * of the vehicle (i.e., target steer and speed) to the DASM task that is in charge
+ * of writing the commands in the CAN line the effective steer and speed to apply.*/
 void *pathPlannerCalculation(void *args);
 
 /*
@@ -91,45 +91,66 @@ void *objDetectGetObject(void *args);
 void *objDetectStructureFromMotion(void *args);
 
 
-/* This task computes and establishes the speed and steer that must be effectively
- * employed from the information that is provided by the Path Planner task*/
+/*
+ * This task computes and establishes the speed and steer that must be effectively
+ * employed from the information that is provided by the Path Planner task. It is executed
+ * on core number 3 on Jetson TX2 ARM A57 core with the thread priority of 99.
+ */
 void *computeSpeedAndSteer(void *args);
 
-/* This task is used to add the OS overhead to the overall tasks */
+
+/*
+ * This task adds an additional overhead to the overall application.
+ * It is used to simulate the overhead that occur in real scenario.
+ * It is executed on core number 3 on Jetson TX2 ARM A57 core with the
+ * thread priority of 99.
+ */
 void *computeOSOverhead(void *args);
+
 
 /* Function to read the Planner buffer */
 int shmemReadPlannerBufferLabel(unsigned int index);
 
+
 /* Function to read the lane boundary buffer */
 int shmemReadLaneBoundaryBufferLabel(unsigned int index);
+
 
 /* Function to read the occupancy grid data buffer */
 int shmemReadGridDataBufferLabel(unsigned int index);
 
+
 /* Function to write to the planner buffer */
 void shmemWritePlannerDataOutLabel(int offset, int size, int data);
+
 
 /* Function to write to SFM and detection buffer */
 void shmemWriteSFMDetectionDataInLabel(int offset, int size, int data);
 
+
 /* Function to write to data grid buffer */
 void shmemWriteGridDataBufferLabel(int offset, int size, int data);
+
 
 /* Function to write to data boundary buffer */
 void shmemWriteLaneBoundaryBufferLabel(int offset, int size, int data);
 
+
 /* Function to write to the Detection data buffer */
 void shmemWriteDetectionDataOutLabel(int offset, int size, void *data);
+
 
 /* Function to write to the Structure-From-motion and detection data buffer */
 int shmemReadSFMDetectionDataInLabel(unsigned int index);
 
+
 /* Function to write to SFM output data buffer. */
 void shmemWriteSFMDataOutLabel(int offset, int size, void *data);
 
+
 /* Function to read SFM data */
 int shmemReadSFMDataOutLabel(unsigned int index);
+
 
 /* Function to read detection data */
 int shmemReadDetectionDataOutLabel(unsigned int index);

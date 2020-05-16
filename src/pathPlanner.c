@@ -80,7 +80,7 @@ static void cOutPlannerData()
 }
 
 
-/*
+/**
  * @brief This task is used perform the Planner task functionality.
  *
  * The main purpose of this component is to define and follow a given trajectory.
@@ -89,12 +89,12 @@ static void cOutPlannerData()
  * and orientation that the car will have to follow. The planner sends the goal state
  * of the vehicle (i.e., target steer and speed) to the DASM task that is in charge
  * of writing the commands in the CAN line the effective steer and speed to apply.
- * It is executed on core number 5 on Jetson TX2 ARM A57 core with the thread priority of 95.
+ * It is executed on core number 5 on Jetson TX2 ARM A57 core with the thread priority of 98.
  *
- * @param args Optional argument. Currently not in use.
+ * @param[in] args Optional argument. Currently not in use.
  *
  * @return void
- **/
+ */
 void *pathPlannerCalculation(void *args)
 {
     uint32_t threadPolicy = 0;
@@ -151,19 +151,18 @@ static void cOutSetCanBusPollingData()
     shmemWritePlannerDataOutLabel(1, dataLength, hostCanBusPolling);
 }
 
-/* */
 
-/*
+/**
  * @brief This task is used perform the CAN Bus Polling task functionality.
  *
  * This task snoops the key vehicle information (steer/wheel/break/acceleration status...)
  * from the on-board CAN bus and sends it to the Localization, Planner and EKF tasks.
  * It is executed on core number 5 on Jetson TX2 ARM A57 core with the thread priority of 99.
  *
- * @param args Optional argument. Currently not in use.
+ * @param[in] args Optional argument. Currently not in use.
  *
  * @return void
- **/
+ */
 void *pathPlannerCanBusPolling(void *args)
 {
     uint32_t threadPolicy = 0;

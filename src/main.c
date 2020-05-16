@@ -54,6 +54,7 @@ static threadPool_t threadPool[MBSE_NUMBER_OF_THREADS] =
  *
  * The functions initializes and creates all the task threads mentioned in the thread pool.
  * In case of any error it prints the error message with an error code.
+ *
  * @return void
  */
 static void startRealTimeThreads(void)
