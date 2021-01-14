@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MBSE WATERS CHALLENGE 2019: inc/mbseCuda.h File Reference</title>
+<title>REVERSE ENGINEERING WATERS CHALLENGE 2019: inc/mbseCuda.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">MBSE WATERS CHALLENGE 2019
+   <div id="projectname">REVERSE ENGINEERING WATERS CHALLENGE 2019
    </div>
    <div id="projectbrief">IMPLEMENTATION OF WATERS CHALLENGE 2019 ON NVIDIA JETSON TX2</div>
   </td>
@@ -111,30 +111,34 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a9fab0ff65e0d51da98845d8014fe7fbb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mbseCuda_8h.html#a9fab0ff65e0d51da98845d8014fe7fbb">minVal</a>(a,  b)&#160;&#160;&#160;((a &gt; b) ? b : a)</td></tr>
+<tr class="memitem:a9fab0ff65e0d51da98845d8014fe7fbb"><td class="memItemLeft" align="right" valign="top"><a id="a9fab0ff65e0d51da98845d8014fe7fbb"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>minVal</b>(a,  b)&#160;&#160;&#160;((a &gt; b) ? b : a)</td></tr>
 <tr class="separator:a9fab0ff65e0d51da98845d8014fe7fbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a2634653b29df52979b094a023dea895a"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structdetectObject__t.html">detectObject_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mbseCuda_8h.html#a2634653b29df52979b094a023dea895a">detectObject</a></td></tr>
+<tr class="memitem:a2634653b29df52979b094a023dea895a"><td class="memItemLeft" align="right" valign="top"><a id="a2634653b29df52979b094a023dea895a"></a>
+typedef struct <a class="el" href="structdetectObject__t.html">detectObject_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>detectObject</b></td></tr>
 <tr class="separator:a2634653b29df52979b094a023dea895a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12971ba49530a459cd3d7109384c17b5"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structsfmData__t.html">sfmData_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mbseCuda_8h.html#a12971ba49530a459cd3d7109384c17b5">sfmData</a></td></tr>
+<tr class="memitem:a12971ba49530a459cd3d7109384c17b5"><td class="memItemLeft" align="right" valign="top"><a id="a12971ba49530a459cd3d7109384c17b5"></a>
+typedef struct <a class="el" href="structsfmData__t.html">sfmData_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>sfmData</b></td></tr>
 <tr class="separator:a12971ba49530a459cd3d7109384c17b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae1c445b67414dc4f0f85257f5bf69862"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structplannerData__t.html">plannerData_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mbseCuda_8h.html#ae1c445b67414dc4f0f85257f5bf69862">plannerData</a></td></tr>
+<tr class="memitem:ae1c445b67414dc4f0f85257f5bf69862"><td class="memItemLeft" align="right" valign="top"><a id="ae1c445b67414dc4f0f85257f5bf69862"></a>
+typedef struct <a class="el" href="structplannerData__t.html">plannerData_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>plannerData</b></td></tr>
 <tr class="separator:ae1c445b67414dc4f0f85257f5bf69862"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a701c19ba4b442e6fde4191d352a9fe26"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mbseCuda_8h.html#a701c19ba4b442e6fde4191d352a9fe26">cuDetectObject</a> (const char *function, <a class="el" href="mbseCuda_8h.html#a2634653b29df52979b094a023dea895a">detectObject</a> *objdetected)</td></tr>
+<tr class="memitem:a701c19ba4b442e6fde4191d352a9fe26"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mbseCuda_8h.html#a701c19ba4b442e6fde4191d352a9fe26">cuDetectObject</a> (const char *function, <a class="el" href="structdetectObject__t.html">detectObject</a> *objdetected)</td></tr>
 <tr class="memdesc:a701c19ba4b442e6fde4191d352a9fe26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to process the Detection task.  <a href="#a701c19ba4b442e6fde4191d352a9fe26">More...</a><br /></td></tr>
 <tr class="separator:a701c19ba4b442e6fde4191d352a9fe26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a997afa430b5acff03d462a8a775f0716"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mbseCuda_8h.html#a997afa430b5acff03d462a8a775f0716">cuObjDetectSFM</a> (const char *func, <a class="el" href="mbseCuda_8h.html#a12971ba49530a459cd3d7109384c17b5">sfmData</a> *sfmInputData)</td></tr>
+<tr class="memitem:a997afa430b5acff03d462a8a775f0716"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mbseCuda_8h.html#a997afa430b5acff03d462a8a775f0716">cuObjDetectSFM</a> (const char *func, <a class="el" href="structsfmData__t.html">sfmData</a> *sfmInputData)</td></tr>
 <tr class="memdesc:a997afa430b5acff03d462a8a775f0716"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to process the SFM task.  <a href="#a997afa430b5acff03d462a8a775f0716">More...</a><br /></td></tr>
 <tr class="separator:a997afa430b5acff03d462a8a775f0716"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45001fd13f608b5f0822591fdf36f9dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mbseCuda_8h.html#a45001fd13f608b5f0822591fdf36f9dc">cuPlannerFetchCanBusData</a> (const char *func, int *hostCanPollingData)</td></tr>
 <tr class="memdesc:a45001fd13f608b5f0822591fdf36f9dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to process the CAN bus polling task.  <a href="#a45001fd13f608b5f0822591fdf36f9dc">More...</a><br /></td></tr>
 <tr class="separator:a45001fd13f608b5f0822591fdf36f9dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e6347e62b94ebbb9baad7a77307fd6d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mbseCuda_8h.html#a9e6347e62b94ebbb9baad7a77307fd6d">cuPlannerInterpolatePath</a> (const char *func, <a class="el" href="mbseCuda_8h.html#ae1c445b67414dc4f0f85257f5bf69862">plannerData</a> *data)</td></tr>
+<tr class="memitem:a9e6347e62b94ebbb9baad7a77307fd6d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mbseCuda_8h.html#a9e6347e62b94ebbb9baad7a77307fd6d">cuPlannerInterpolatePath</a> (const char *func, <a class="el" href="structplannerData__t.html">plannerData</a> *data)</td></tr>
 <tr class="memdesc:a9e6347e62b94ebbb9baad7a77307fd6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to process the Planner task.  <a href="#a9e6347e62b94ebbb9baad7a77307fd6d">More...</a><br /></td></tr>
 <tr class="separator:a9e6347e62b94ebbb9baad7a77307fd6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add235ed9eabfcbcc1c5a959443eaa562"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="mbseCuda_8h.html#add235ed9eabfcbcc1c5a959443eaa562">cuProcessDASM</a> (const char *func, int *steer, int *speed)</td></tr>
@@ -152,79 +156,7 @@ Functions</h2></td></tr>
 <dl class="section author"><dt>Author</dt><dd>Anand Prakash </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>22 April 2020 </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://www.ecrts.org/archives/fileadmin/WebsitesArchiv/ecrts2019/waters/index.html">https://www.ecrts.org/archives/fileadmin/WebsitesArchiv/ecrts2019/waters/index.html</a> </dd></dl>
-</div><h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a9fab0ff65e0d51da98845d8014fe7fbb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9fab0ff65e0d51da98845d8014fe7fbb">&#9670;&nbsp;</a></span>minVal</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define minVal</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">a, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">b&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;((a &gt; b) ? b : a)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Typedef Documentation</h2>
-<a id="a2634653b29df52979b094a023dea895a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2634653b29df52979b094a023dea895a">&#9670;&nbsp;</a></span>detectObject</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="structdetectObject__t.html">detectObject_t</a>  <a class="el" href="mbseCuda_8h.html#a2634653b29df52979b094a023dea895a">detectObject</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae1c445b67414dc4f0f85257f5bf69862"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae1c445b67414dc4f0f85257f5bf69862">&#9670;&nbsp;</a></span>plannerData</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="structplannerData__t.html">plannerData_t</a>  <a class="el" href="mbseCuda_8h.html#ae1c445b67414dc4f0f85257f5bf69862">plannerData</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a12971ba49530a459cd3d7109384c17b5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a12971ba49530a459cd3d7109384c17b5">&#9670;&nbsp;</a></span>sfmData</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="structsfmData__t.html">sfmData_t</a>  <a class="el" href="mbseCuda_8h.html#a12971ba49530a459cd3d7109384c17b5">sfmData</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="aa1029db8455f459d83ba11b1722c937f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa1029db8455f459d83ba11b1722c937f">&#9670;&nbsp;</a></span>addOSOverhead()</h2>
 
@@ -268,7 +200,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="mbseCuda_8h.html#a2634653b29df52979b094a023dea895a">detectObject</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structdetectObject__t.html">detectObject</a> *&#160;</td>
           <td class="paramname"><em>objdetected</em>&#160;</td>
         </tr>
         <tr>
@@ -307,7 +239,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="mbseCuda_8h.html#a12971ba49530a459cd3d7109384c17b5">sfmData</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structsfmData__t.html">sfmData</a> *&#160;</td>
           <td class="paramname"><em>sfmInput</em>&#160;</td>
         </tr>
         <tr>
@@ -385,7 +317,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="mbseCuda_8h.html#ae1c445b67414dc4f0f85257f5bf69862">plannerData</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structplannerData__t.html">plannerData</a> *&#160;</td>
           <td class="paramname"><em>data</em>&#160;</td>
         </tr>
         <tr>

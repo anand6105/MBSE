@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MBSE WATERS CHALLENGE 2019: src/cuObjDetection.cu File Reference</title>
+<title>REVERSE ENGINEERING WATERS CHALLENGE 2019: src/cuObjDetection.cu File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">MBSE WATERS CHALLENGE 2019
+   <div id="projectname">REVERSE ENGINEERING WATERS CHALLENGE 2019
    </div>
    <div id="projectbrief">IMPLEMENTATION OF WATERS CHALLENGE 2019 ON NVIDIA JETSON TX2</div>
   </td>
@@ -87,13 +87,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a2667570efdfd33cd6220a35cbce5dc36"><td class="memItemLeft" align="right" valign="top">__global__ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuObjDetection_8cu.html#a2667570efdfd33cd6220a35cbce5dc36">processImage</a> (int *hostBbox, int *devBbox, int *hostImage, int *devImage, int numElements)</td></tr>
 <tr class="memdesc:a2667570efdfd33cd6220a35cbce5dc36"><td class="mdescLeft">&#160;</td><td class="mdescRight">CUDA Kernel Device code.  <a href="#a2667570efdfd33cd6220a35cbce5dc36">More...</a><br /></td></tr>
 <tr class="separator:a2667570efdfd33cd6220a35cbce5dc36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab48973da400db7d967b75790ca7dff94"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuObjDetection_8cu.html#ab48973da400db7d967b75790ca7dff94">cuDetectObject</a> (const char *func, <a class="el" href="mbseCuda_8h.html#a2634653b29df52979b094a023dea895a">detectObject</a> *objdetected)</td></tr>
+<tr class="memitem:ab48973da400db7d967b75790ca7dff94"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuObjDetection_8cu.html#ab48973da400db7d967b75790ca7dff94">cuDetectObject</a> (const char *func, <a class="el" href="structdetectObject__t.html">detectObject</a> *objdetected)</td></tr>
 <tr class="memdesc:ab48973da400db7d967b75790ca7dff94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to process the Detection task.  <a href="#ab48973da400db7d967b75790ca7dff94">More...</a><br /></td></tr>
 <tr class="separator:ab48973da400db7d967b75790ca7dff94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf991864d76b1cb5f485975966e73efa"><td class="memItemLeft" align="right" valign="top">__global__ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuObjDetection_8cu.html#adf991864d76b1cb5f485975966e73efa">processSFMData</a> (int *image, int *matrix, int nbin, int step, int nthreads, int nblocks)</td></tr>
-<tr class="memdesc:adf991864d76b1cb5f485975966e73efa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Kernel that executes on the CUDA device to process the SFM data.  <a href="#adf991864d76b1cb5f485975966e73efa">More...</a><br /></td></tr>
+<tr class="memitem:adf991864d76b1cb5f485975966e73efa"><td class="memItemLeft" align="right" valign="top"><a id="adf991864d76b1cb5f485975966e73efa"></a>
+__global__ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuObjDetection_8cu.html#adf991864d76b1cb5f485975966e73efa">processSFMData</a> (int *image, int *matrix, int nbin, int step, int nthreads, int nblocks)</td></tr>
+<tr class="memdesc:adf991864d76b1cb5f485975966e73efa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Kernel that executes on the CUDA device to process the SFM data. <br /></td></tr>
 <tr class="separator:adf991864d76b1cb5f485975966e73efa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a918edd204f0f86c842b85a4864d613cb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuObjDetection_8cu.html#a918edd204f0f86c842b85a4864d613cb">cuObjDetectSFM</a> (const char *func, <a class="el" href="mbseCuda_8h.html#a12971ba49530a459cd3d7109384c17b5">sfmData</a> *sfmInput)</td></tr>
+<tr class="memitem:a918edd204f0f86c842b85a4864d613cb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuObjDetection_8cu.html#a918edd204f0f86c842b85a4864d613cb">cuObjDetectSFM</a> (const char *func, <a class="el" href="structsfmData__t.html">sfmData</a> *sfmInput)</td></tr>
 <tr class="memdesc:a918edd204f0f86c842b85a4864d613cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to process the SFM task.  <a href="#a918edd204f0f86c842b85a4864d613cb">More...</a><br /></td></tr>
 <tr class="separator:a918edd204f0f86c842b85a4864d613cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -118,7 +119,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="mbseCuda_8h.html#a2634653b29df52979b094a023dea895a">detectObject</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structdetectObject__t.html">detectObject</a> *&#160;</td>
           <td class="paramname"><em>objdetected</em>&#160;</td>
         </tr>
         <tr>
@@ -157,7 +158,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="mbseCuda_8h.html#a12971ba49530a459cd3d7109384c17b5">sfmData</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structsfmData__t.html">sfmData</a> *&#160;</td>
           <td class="paramname"><em>sfmInput</em>&#160;</td>
         </tr>
         <tr>
@@ -227,60 +228,6 @@ Functions</h2></td></tr>
 
 <p>CUDA Kernel Device code. </p>
 <p>Runnable to Process the image to detect and classify the objects by creating the Boundary Box. </p>
-
-</div>
-</div>
-<a id="adf991864d76b1cb5f485975966e73efa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adf991864d76b1cb5f485975966e73efa">&#9670;&nbsp;</a></span>processSFMData()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">__global__ void processSFMData </td>
-          <td>(</td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>image</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>matrix</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>nbin</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>step</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>nthreads</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>nblocks</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Kernel that executes on the CUDA device to process the SFM data. </p>
 
 </div>
 </div>

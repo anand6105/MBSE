@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MBSE WATERS CHALLENGE 2019: src/sharedMemory.c File Reference</title>
+<title>REVERSE ENGINEERING WATERS CHALLENGE 2019: src/sharedMemory.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">MBSE WATERS CHALLENGE 2019
+   <div id="projectname">REVERSE ENGINEERING WATERS CHALLENGE 2019
    </div>
    <div id="projectbrief">IMPLEMENTATION OF WATERS CHALLENGE 2019 ON NVIDIA JETSON TX2</div>
   </td>
@@ -85,17 +85,23 @@ Include dependency graph for sharedMemory.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a9a13e144a83128e448d8990ea38bdcb8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sharedMemory_8c.html#a9a13e144a83128e448d8990ea38bdcb8">DATA_IN_SFM_DETECTION_BUFFER</a>&#160;&#160;&#160;((2 * 1024 * 1024) / 4)</td></tr>
+<tr class="memitem:a9a13e144a83128e448d8990ea38bdcb8"><td class="memItemLeft" align="right" valign="top"><a id="a9a13e144a83128e448d8990ea38bdcb8"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>DATA_IN_SFM_DETECTION_BUFFER</b>&#160;&#160;&#160;((2 * 1024 * 1024) / 4)</td></tr>
 <tr class="separator:a9a13e144a83128e448d8990ea38bdcb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51530ccabfcd37418604ada9efbfc7c9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sharedMemory_8c.html#a51530ccabfcd37418604ada9efbfc7c9">DATA_OUT_SFM_BUFFER</a>&#160;&#160;&#160;((24 * 1024) / 4)</td></tr>
+<tr class="memitem:a51530ccabfcd37418604ada9efbfc7c9"><td class="memItemLeft" align="right" valign="top"><a id="a51530ccabfcd37418604ada9efbfc7c9"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>DATA_OUT_SFM_BUFFER</b>&#160;&#160;&#160;((24 * 1024) / 4)</td></tr>
 <tr class="separator:a51530ccabfcd37418604ada9efbfc7c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ed010c22dce70e778542ca5d598344b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sharedMemory_8c.html#a8ed010c22dce70e778542ca5d598344b">DATA_OUT_DETECTION_BUFFER</a>&#160;&#160;&#160;((750 * 1024) / 4)</td></tr>
+<tr class="memitem:a8ed010c22dce70e778542ca5d598344b"><td class="memItemLeft" align="right" valign="top"><a id="a8ed010c22dce70e778542ca5d598344b"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>DATA_OUT_DETECTION_BUFFER</b>&#160;&#160;&#160;((750 * 1024) / 4)</td></tr>
 <tr class="separator:a8ed010c22dce70e778542ca5d598344b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa6269edd7b373e64bbf3c88ec2711a84"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sharedMemory_8c.html#aa6269edd7b373e64bbf3c88ec2711a84">DATA_OUT_PLANNER_BUFFER</a>&#160;&#160;&#160;((1 * 1024) / 4)</td></tr>
+<tr class="memitem:aa6269edd7b373e64bbf3c88ec2711a84"><td class="memItemLeft" align="right" valign="top"><a id="aa6269edd7b373e64bbf3c88ec2711a84"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>DATA_OUT_PLANNER_BUFFER</b>&#160;&#160;&#160;((1 * 1024) / 4)</td></tr>
 <tr class="separator:aa6269edd7b373e64bbf3c88ec2711a84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54cb4d0ca07c65e92a66c8ef09775b8b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sharedMemory_8c.html#a54cb4d0ca07c65e92a66c8ef09775b8b">DATA_GRID_BUFFER</a>&#160;&#160;&#160;((1024 * 512) / 4)</td></tr>
+<tr class="memitem:a54cb4d0ca07c65e92a66c8ef09775b8b"><td class="memItemLeft" align="right" valign="top"><a id="a54cb4d0ca07c65e92a66c8ef09775b8b"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>DATA_GRID_BUFFER</b>&#160;&#160;&#160;((1024 * 512) / 4)</td></tr>
 <tr class="separator:a54cb4d0ca07c65e92a66c8ef09775b8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7a5f984afd5d71f2ffadf57505f6ac4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sharedMemory_8c.html#aa7a5f984afd5d71f2ffadf57505f6ac4">DATA_LANE_BOUNDARY_BUFFER</a>&#160;&#160;&#160;(256 / 4)</td></tr>
+<tr class="memitem:aa7a5f984afd5d71f2ffadf57505f6ac4"><td class="memItemLeft" align="right" valign="top"><a id="aa7a5f984afd5d71f2ffadf57505f6ac4"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>DATA_LANE_BOUNDARY_BUFFER</b>&#160;&#160;&#160;(256 / 4)</td></tr>
 <tr class="separator:aa7a5f984afd5d71f2ffadf57505f6ac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -142,92 +148,7 @@ Functions</h2></td></tr>
 <dl class="section author"><dt>Author</dt><dd>Anand Prakash </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>05 May 2020 It consists a common input buffer for Detection and Structure for Motion task which is 2MB in size. Output data buffer for Structure for motion and Detection task with size 24KB and 750KB respectively. The planner, data grid and lane boundary buffers are 1KB, 512KB and 256 bytes in size respectively.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a href="https://www.ecrts.org/archives/fileadmin/WebsitesArchiv/ecrts2019/waters/index.html">https://www.ecrts.org/archives/fileadmin/WebsitesArchiv/ecrts2019/waters/index.html</a> </dd></dl>
-</div><h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a54cb4d0ca07c65e92a66c8ef09775b8b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a54cb4d0ca07c65e92a66c8ef09775b8b">&#9670;&nbsp;</a></span>DATA_GRID_BUFFER</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DATA_GRID_BUFFER&#160;&#160;&#160;((1024 * 512) / 4)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9a13e144a83128e448d8990ea38bdcb8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9a13e144a83128e448d8990ea38bdcb8">&#9670;&nbsp;</a></span>DATA_IN_SFM_DETECTION_BUFFER</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DATA_IN_SFM_DETECTION_BUFFER&#160;&#160;&#160;((2 * 1024 * 1024) / 4)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa7a5f984afd5d71f2ffadf57505f6ac4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa7a5f984afd5d71f2ffadf57505f6ac4">&#9670;&nbsp;</a></span>DATA_LANE_BOUNDARY_BUFFER</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DATA_LANE_BOUNDARY_BUFFER&#160;&#160;&#160;(256 / 4)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8ed010c22dce70e778542ca5d598344b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ed010c22dce70e778542ca5d598344b">&#9670;&nbsp;</a></span>DATA_OUT_DETECTION_BUFFER</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DATA_OUT_DETECTION_BUFFER&#160;&#160;&#160;((750 * 1024) / 4)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa6269edd7b373e64bbf3c88ec2711a84"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa6269edd7b373e64bbf3c88ec2711a84">&#9670;&nbsp;</a></span>DATA_OUT_PLANNER_BUFFER</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DATA_OUT_PLANNER_BUFFER&#160;&#160;&#160;((1 * 1024) / 4)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a51530ccabfcd37418604ada9efbfc7c9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a51530ccabfcd37418604ada9efbfc7c9">&#9670;&nbsp;</a></span>DATA_OUT_SFM_BUFFER</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DATA_OUT_SFM_BUFFER&#160;&#160;&#160;((24 * 1024) / 4)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="a63b95f52988d78e68960c2f86822549f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a63b95f52988d78e68960c2f86822549f">&#9670;&nbsp;</a></span>shmemReadDetectionDataOutLabel()</h2>
 

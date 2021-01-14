@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MBSE WATERS CHALLENGE 2019: src/cuDASM.cu File Reference</title>
+<title>REVERSE ENGINEERING WATERS CHALLENGE 2019: src/cuDASM.cu File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">MBSE WATERS CHALLENGE 2019
+   <div id="projectname">REVERSE ENGINEERING WATERS CHALLENGE 2019
    </div>
    <div id="projectbrief">IMPLEMENTATION OF WATERS CHALLENGE 2019 ON NVIDIA JETSON TX2</div>
   </td>
@@ -84,14 +84,16 @@ Include dependency graph for cuDASM.cu:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a0d283e39766b6e96f92d992157f3291f"><td class="memItemLeft" align="right" valign="top">__global__ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuDASM_8cu.html#a0d283e39766b6e96f92d992157f3291f">computeDASM</a> (int *devSpeed, int *devSteer, int step, int size)</td></tr>
-<tr class="memdesc:a0d283e39766b6e96f92d992157f3291f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Kernel that executes on the CUDA device to compute the speed and steer for DASM task.  <a href="#a0d283e39766b6e96f92d992157f3291f">More...</a><br /></td></tr>
+<tr class="memitem:a0d283e39766b6e96f92d992157f3291f"><td class="memItemLeft" align="right" valign="top"><a id="a0d283e39766b6e96f92d992157f3291f"></a>
+__global__ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuDASM_8cu.html#a0d283e39766b6e96f92d992157f3291f">computeDASM</a> (int *devSpeed, int *devSteer, int step, int size)</td></tr>
+<tr class="memdesc:a0d283e39766b6e96f92d992157f3291f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Kernel that executes on the CUDA device to compute the speed and steer for DASM task. <br /></td></tr>
 <tr class="separator:a0d283e39766b6e96f92d992157f3291f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add235ed9eabfcbcc1c5a959443eaa562"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuDASM_8cu.html#add235ed9eabfcbcc1c5a959443eaa562">cuProcessDASM</a> (const char *func, int *steer, int *speed)</td></tr>
 <tr class="memdesc:add235ed9eabfcbcc1c5a959443eaa562"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to process the DASM task.  <a href="#add235ed9eabfcbcc1c5a959443eaa562">More...</a><br /></td></tr>
 <tr class="separator:add235ed9eabfcbcc1c5a959443eaa562"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a059d54e8b2e92ff68c916bc4dafa5118"><td class="memItemLeft" align="right" valign="top">__global__ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuDASM_8cu.html#a059d54e8b2e92ff68c916bc4dafa5118">osOverhead</a> (int *A, int *B, int *C, int size)</td></tr>
-<tr class="memdesc:a059d54e8b2e92ff68c916bc4dafa5118"><td class="mdescLeft">&#160;</td><td class="mdescRight">Kernel that executes on the CUDA device the OS overhead task.  <a href="#a059d54e8b2e92ff68c916bc4dafa5118">More...</a><br /></td></tr>
+<tr class="memitem:a059d54e8b2e92ff68c916bc4dafa5118"><td class="memItemLeft" align="right" valign="top"><a id="a059d54e8b2e92ff68c916bc4dafa5118"></a>
+__global__ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuDASM_8cu.html#a059d54e8b2e92ff68c916bc4dafa5118">osOverhead</a> (int *A, int *B, int *C, int size)</td></tr>
+<tr class="memdesc:a059d54e8b2e92ff68c916bc4dafa5118"><td class="mdescLeft">&#160;</td><td class="mdescRight">Kernel that executes on the CUDA device the OS overhead task. <br /></td></tr>
 <tr class="separator:a059d54e8b2e92ff68c916bc4dafa5118"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1029db8455f459d83ba11b1722c937f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cuDASM_8cu.html#aa1029db8455f459d83ba11b1722c937f">addOSOverhead</a> (const char *func)</td></tr>
 <tr class="memdesc:aa1029db8455f459d83ba11b1722c937f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to process the OS overhead task.  <a href="#aa1029db8455f459d83ba11b1722c937f">More...</a><br /></td></tr>
@@ -128,48 +130,6 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
-
-</div>
-</div>
-<a id="a0d283e39766b6e96f92d992157f3291f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d283e39766b6e96f92d992157f3291f">&#9670;&nbsp;</a></span>computeDASM()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">__global__ void computeDASM </td>
-          <td>(</td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>devSpeed</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>devSteer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>step</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>size</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Kernel that executes on the CUDA device to compute the speed and steer for DASM task. </p>
 
 </div>
 </div>
@@ -216,48 +176,6 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
-
-</div>
-</div>
-<a id="a059d54e8b2e92ff68c916bc4dafa5118"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a059d54e8b2e92ff68c916bc4dafa5118">&#9670;&nbsp;</a></span>osOverhead()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">__global__ void osOverhead </td>
-          <td>(</td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>A</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>B</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>C</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>size</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Kernel that executes on the CUDA device the OS overhead task. </p>
 
 </div>
 </div>

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['getcanbusdata',['getCanBusData',['../cuPathPlanner_8cu.html#a30a6ea65de072180e0342a9a0e77a5ae',1,'cuPathPlanner.cu']]],
-  ['getcudadeviceproperties',['getCudaDeviceProperties',['../mbseCuda_8h.html#a1534098a04bada206ad8e1a689df43aa',1,'getCudaDeviceProperties(void):&#160;cudaUtils.cu'],['../cudaUtils_8cu.html#a1534098a04bada206ad8e1a689df43aa',1,'getCudaDeviceProperties(void):&#160;cudaUtils.cu']]]
+  ['imagedevicedetection',['imageDeviceDetection',['../structdetectObject__t.html#a4da788f6cf7b29b9f8fa63abdcd1e4fa',1,'detectObject_t']]],
+  ['imagehostdetection',['imageHostDetection',['../structdetectObject__t.html#a315b9b006c41c3a5222a3eccd435c095',1,'detectObject_t']]],
+  ['imagesfmhost',['imageSFMHost',['../structsfmData__t.html#a641a79602a140d5101412297de231eb6',1,'sfmData_t']]]
 ];
