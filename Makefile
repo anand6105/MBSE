@@ -71,6 +71,8 @@ NVCCFLAGS   := -m${TARGET_SIZE}
 CCFLAGS     :=
 LDFLAGS     :=
 
+$(info    TARGGET ARCH is $(TARGET_ARCH) host arch is ${HOST_ARCH})
+
 # build flags
 ifeq ($(TARGET_OS),darwin)
     LDFLAGS += -rpath $(CUDA_PATH)/lib
